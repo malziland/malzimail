@@ -41,7 +41,7 @@ Architektur: [docs/architektur.md](docs/architektur.md) · Ziel-Struktur: [docs/
 
 ## Lizenz
 
-**MIT** — siehe [LICENSE](LICENSE). © 2026 Christoph Krieger (malziland e.U.).
+**MIT** — siehe [LICENSE](LICENSE). © 2026 Christoph Krieger (malziland - learning | training | consulting e.U.).
 
 ## Haftungsausschluss
 

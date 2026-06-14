@@ -142,7 +142,7 @@ export function renderSetupOperator({ values = {}, error } = {}) {
       <input type="hidden" name="action" value="setup_operator">
       ${field('service_name', 'Name des Dienstes', 'z.B. workshopmail')}
       ${field('owner', 'Name (Inhaber:in / verantwortliche Person)', 'Vor- und Nachname')}
-      ${field('company', 'Firma / Unternehmensname (optional)', 'z.B. malziland e.U.', false)}
+      ${field('company', 'Firma / Unternehmensname (optional)', 'z.B. Beispiel GmbH', false)}
       ${field('street', 'Straße und Hausnummer', 'z.B. Musterweg 1')}
       <div class="row-12">
         <div class="col-zip">${field('zip', 'PLZ', 'z.B. 4020')}</div>
