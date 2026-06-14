@@ -228,8 +228,7 @@ body {
 .detail__body pre { margin: 0; padding: 16px; font: .92rem ui-monospace, monospace; white-space: pre-wrap; word-break: break-word; background: #fff; color: #1a1a1a; }
 
 @media (max-width: 520px) {
-  .address-row { flex-wrap: wrap; }
-  .address-row input { flex: 1 1 100%; min-width: 0; }
+  .address-row input { min-width: 0; }
   .address-row .btn--icon { width: 44px; height: 44px; }
   .messages li { grid-template-columns: 1fr; }
   .msg-time { margin-top: 4px; }

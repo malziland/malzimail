@@ -20,11 +20,12 @@ import {
   findWorkshopTrainer, findFirstTrainer, deactivateAllTrainers, insertWorkshopTrainer, lastMessageAt,
 } from '../db/queries.js';
 
-// CSRF defense-in-depth. The auth cookie is already SameSite=Strict (the browser
-// won't attach it to cross-site requests), but on a state-changing request we
-// additionally reject a present Origin/Referer that does not match this site.
-// Missing headers are allowed (some legitimate clients omit them; SameSite is the
-// primary guard). Returns true when the request is safe to process.
+// CSRF defense: every state-changing POST must be same-origin — a present
+// Origin/Referer that does not match this site is rejected (the primary guard).
+// The auth cookie is SameSite=Lax: NOT sent on cross-site POSTs (CSRF on state
+// changes stays blocked) but sent on top-level GET navigations, so reopening the
+// browser keeps you logged in (iOS Safari drops SameSite=Strict cookies on a fresh
+// navigation). Missing Origin/Referer is allowed. Returns true when safe to process.
 function isSameOrigin(request, url) {
   const origin = request.headers.get('origin');
   if (origin) return origin === url.origin;
@@ -70,7 +71,7 @@ export async function handleAdmin(request, env, url) {
       status: 303,
       headers: {
         location: '/admin',
-        'set-cookie': 'mzm_admin=; Path=/; Max-Age=0; HttpOnly; Secure; SameSite=Strict'
+        'set-cookie': 'mzm_admin=; Path=/; Max-Age=0; HttpOnly; Secure; SameSite=Lax'
       }
     });
   }
@@ -91,7 +92,7 @@ export async function handleAdmin(request, env, url) {
   const authed = cookieValid || urlKeyValid;
 
   const thirtyDaysSec = 30 * 24 * 3600;
-  const setCookie = (secret) => `mzm_admin=${secret}; Path=/; Max-Age=${thirtyDaysSec}; HttpOnly; Secure; SameSite=Strict`;
+  const setCookie = (secret) => `mzm_admin=${secret}; Path=/; Max-Age=${thirtyDaysSec}; HttpOnly; Secure; SameSite=Lax`;
 
   // SEC-05: a valid ?key= upgrades to the auth cookie and redirects to a clean URL,
   // so the admin key isn't carried (and thus logged / shared / left in history) in

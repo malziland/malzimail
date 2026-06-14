@@ -25,7 +25,7 @@ export async function handleRoot(request, env, url) {
   if (urlToken && urlToken === token) {
     const headers = new Headers(response.headers);
     headers.append('set-cookie',
-      `mzm_t=${encodeURIComponent(token)}; Path=/; Max-Age=86400; Secure; SameSite=Strict; HttpOnly`);
+      `mzm_t=${encodeURIComponent(token)}; Path=/; Max-Age=86400; Secure; SameSite=Lax; HttpOnly`);
     return new Response(response.body, { status: response.status, headers });
   }
   return response;
