@@ -1,5 +1,7 @@
 # malzimail Open Source — Projekt-Charta (Qualitäts- & Architektur-Rahmen)
 
+> ✅ **Stand: v1.0.0 veröffentlicht.** Diese Qualitätsmaßstäbe gelten weiterhin für jede Änderung.
+
 Dieses Dokument steht ÜBER dem Umbau-Konzept ([oss-umbau-konzept.md](oss-umbau-konzept.md)). Es legt fest, welche Qualitätsmaßstäbe von der ersten Zeile an gelten, damit am Ende ein professionelles, erweiterbares Projekt steht — nicht ein „schnell-schnell"-Release. Leitsatz: **Lieber langsamer und sauber als schnell und brüchig. Der laufende Dienst bleibt durchgehend funktionsfähig.**
 
 ---
@@ -103,7 +105,7 @@ Gegenüber dem Umbau-Konzept wird jede Phase um „Tests + Doku + ggf. Recht" er
 | **5 — Recht & Härtung** | **Rechtsrecherche + Disclaimer + Lizenz final**, Security-Audit, Dependency-Check, SECURITY.md | eigener Block, nicht übersprungen |
 | **6 — Release** | Aufräumen (Hardcodes/Trainer-Code raus), Deploy-Knopf, finale Doku, Public-Repo, v1.0.0 | Realtest: Fremde:r setzt Instanz auf |
 
-Jede Phase = eigener, abgeschlossener, getesteter Stand. Veröffentlicht wird erst nach Phase 6.
+Jede Phase = eigener, abgeschlossener, getesteter Stand. (Umbau abgeschlossen — mit **v1.0.0 veröffentlicht**.)
 
 ---
 

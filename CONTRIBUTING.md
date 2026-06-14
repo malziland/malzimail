@@ -1,6 +1,6 @@
 # Mitmachen bei malzimail
 
-Danke für dein Interesse! Bis zur Veröffentlichung (v1.0.0) ist das Projekt im Umbau — Beiträge sind ab dann willkommen. Diese Regeln gelten schon jetzt für alle Änderungen.
+Danke für dein Interesse! malzimail ist mit **v1.0.0 veröffentlicht** — Beiträge (Issues, Pull Requests) sind willkommen. Bitte halte dich an die folgenden Regeln.
 
 ## Setup
 
@@ -25,7 +25,7 @@ Node-Version: siehe `.nvmrc`. Lokale Entwicklung: `npm run dev` (Wrangler).
 ## Architektur-Leitplanken
 
 - Ziel-Schichten: `routes → domain → db/lib`, HTML in `views`. Siehe [docs/projektstruktur.md](docs/projektstruktur.md).
-- Keine Geheimnisse in Code oder Repo — Secrets über Wrangler bzw. (künftig) verschlüsselte Settings.
+- Keine Geheimnisse in Code oder Repo — Secrets über Wrangler bzw. verschlüsselte Settings (AES-GCM in der DB).
 - Qualitätsmaßstäbe: [docs/oss-projekt-charta.md](docs/oss-projekt-charta.md).
 
 ## Pull Requests

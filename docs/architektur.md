@@ -49,4 +49,4 @@ Mail-Empfang ist auf dev nicht testbar (keine Domain/MX) — der Mail-Pfad wird 
 
 - **Vitest + `@cloudflare/vitest-pool-workers`** — Tests laufen in der echten workerd-Laufzeit (`npm test`). Struktur: `test/unit`, `test/integration`, `test/helpers`.
 - **ESLint** (flat config) — `npm run lint`; beides zusammen: `npm run check`.
-- **CI:** `.github/workflows/ci.yml` (aktiv, sobald das Repo auf GitHub liegt).
+- **CI:** `.github/workflows/ci.yml` (läuft bei jedem Push/Pull-Request auf GitHub).

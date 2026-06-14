@@ -1,5 +1,7 @@
 # Konzept: Umbau zur Open-Source-Version — ohne Risiko für den laufenden Dienst
 
+> ✅ **Stand: Umbau abgeschlossen — malzimail ist mit v1.0.0 veröffentlicht.** Dieses Dokument hält den damals geplanten Weg (Phasen 0–6) als Entscheidungs- und Design-Protokoll fest.
+
 ## Getroffene Entscheidungen (11.06.2026)
 
 | Frage | Entscheidung | Konsequenz |
@@ -7,7 +9,7 @@
 | Eigene Instanz malzimail.at? | **wird ebenfalls auf Einzel-Workshop umgestellt** | kein Dauer-Doppelmodus nötig — ein Code, ein Verhalten; für die Live-Instanz gibt es einen einmaligen Migrationsschritt |
 | Sprache | **nur Deutsch** | kein Übersetzungsaufwand |
 | Projektname | **„malzimail" wird freigegeben** | Repo + App heißen malzimail; jeder Betreiber setzt im Assistenten eigenen Dienst-Namen + Betreiberdaten |
-| Erst-Veröffentlichung | **Mail + Google untrennbar zusammen** | es gibt keine Variante ohne Google; veröffentlicht wird erst, wenn alle Phasen komplett sind |
+| Erst-Veröffentlichung | **Mail + Google untrennbar zusammen** | es gibt keine Variante ohne Google; mit v1.0.0 veröffentlicht (alle Phasen abgeschlossen) |
 
 ## Ziel
 
@@ -103,7 +105,7 @@ Darin landen: `admin_password_hash`, Betreiberdaten (Name, Impressum-Felder, Kon
 - Letzter Schwung: `COMPANY`-Konstanten + Trainer-Verwaltungs-Code entfernen (jetzt gefahrlos, weil überall Settings greifen), Seed-Referenzen raus, `ADMIN_TRAINER_TOKEN`-Var entfernen.
 - Repo „malzimail" öffentlich (GitHub), Lizenz wählen (Empfehlung: MIT — kurz, maximal permissiv; Entscheidung bei Veröffentlichung), README deutsch.
 - Deploy-Knopf einrichten (`package.json`-Deploy-Script inkl. Migrationen), bebilderte Kurzanleitung für Domain/Nameserver/Email-Routing (Basis: docs/installation-anleitung.md).
-- Veröffentlicht wird erst, wenn Phase 1–4 auf `malzimail-dev` UND auf malzimail.at erprobt sind.
+- Erprobt auf `malzimail-dev` UND auf malzimail.at; danach mit v1.0.0 veröffentlicht.
 
 ## Qualitäts-Säulen (Enterprise-Anspruch — gelten ab Phase 0 für JEDE Phase)
 
