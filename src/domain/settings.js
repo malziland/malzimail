@@ -30,17 +30,6 @@ export async function resolveConfig(env, key, envName, defaultValue = null) {
   return defaultValue;
 }
 
-// Feature flags live in the same table as 'flag_<name>' with value '1'/'0'.
-export async function isFlagEnabled(env, name, defaultValue = false) {
-  const v = await getSetting(env, `flag_${name}`);
-  if (v === null) return defaultValue;
-  return v === '1';
-}
-
-export async function setFlag(env, name, enabled) {
-  await setSetting(env, `flag_${name}`, enabled ? '1' : '0');
-}
-
 // Address/mailbox retention in hours — the single source of truth for both the
 // real expiry AND the legal texts. Precedence: settings 'address_ttl_hours' ->
 // env ADDRESS_TTL_HOURS -> default. Changeable later (e.g. an admin slider)

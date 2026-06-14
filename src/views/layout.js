@@ -3,7 +3,6 @@
 // run under a strict Content-Security-Policy (style-src 'self', no inline <style>).
 
 function htmlShell(title, body, opts = {}) {
-  const showLegalFooter = opts.legalFooter !== false;
   return `<!doctype html>
 <html lang="de">
 <head>
@@ -24,14 +23,13 @@ ${body}
 </main>
 <footer class="footer">
   <div>powered by malziMAIL</div>
-  ${showLegalFooter ? `
   <div class="footer__links">
     <a href="/impressum">Impressum</a>
     <span class="footer__sep">·</span>
     <a href="/datenschutz">Datenschutz</a>
     <span class="footer__sep">·</span>
     <a href="/nutzungsbedingungen">Nutzungsbedingungen</a>
-  </div>` : ''}
+  </div>
 </footer>
 ${opts.script ? `<script src="${opts.script}"></script>` : ''}
 </body>

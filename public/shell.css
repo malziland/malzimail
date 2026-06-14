@@ -51,17 +51,6 @@ p { color: var(--text-soft); line-height: 1.6; }
   padding: 22px;
   margin-bottom: 16px;
 }
-.status-badge {
-  display: inline-flex; align-items: center; gap: 8px;
-  padding: 6px 14px; border-radius: 999px;
-  font-weight: 700; font-size: .9rem;
-}
-.status-badge.active { background: rgba(16,185,129,.15); color: var(--success); border: 1px solid rgba(16,185,129,.35); }
-.status-badge.inactive { background: rgba(239,68,68,.12); color: var(--danger); border: 1px solid rgba(239,68,68,.35); }
-.status-badge::before {
-  content: ""; display: inline-block; width: 8px; height: 8px; border-radius: 50%;
-  background: currentColor;
-}
 .muted { color: var(--muted); font-size: .9rem; }
 .btn {
   display: inline-flex; align-items: center; justify-content: center;
@@ -81,23 +70,11 @@ p { color: var(--text-soft); line-height: 1.6; }
 .btn--ghost:hover { background: rgba(255,255,255,.05); }
 .btn--accent { background: transparent; color: var(--accent); border: 1px solid var(--accent); font-weight: 600; }
 .btn--accent:hover { background: rgba(0,209,178,.12); }
-.btn--warn { background: transparent; color: var(--warn); border: 1px solid rgba(255,181,71,.55); font-weight: 600; }
-.btn--warn:hover { background: rgba(255,181,71,.12); }
 .spin { width: 16px; height: 16px; border: 2px solid var(--border); border-top-color: var(--accent); border-radius: 50%; display: inline-block; animation: spin .7s linear infinite; }
 @keyframes spin { to { transform: rotate(360deg); } }
-.btn--danger { background: rgba(239,68,68,.15); color: #fca5a5; border: 1px solid rgba(239,68,68,.4); }
-.btn--danger:hover { background: rgba(239,68,68,.25); }
 .kvp { display: grid; grid-template-columns: auto 1fr; gap: 8px 16px; font-size: .95rem; margin: 12px 0 0; }
 .kvp dt { color: var(--muted); }
 .kvp dd { margin: 0; color: var(--text); }
-.url-box {
-  display: flex; gap: 8px; align-items: stretch; margin-top: 8px;
-}
-.url-box input {
-  flex: 1; font: .95rem ui-monospace, SFMono-Regular, Menlo, monospace;
-  background: var(--bg-input); border: 1px solid var(--border); color: var(--text);
-  border-radius: 10px; padding: 10px 12px;
-}
 .footer {
   border-top: 1px solid var(--border); margin-top: 30px; padding: 18px 20px;
   color: var(--muted); font-size: .85rem; text-align: center;

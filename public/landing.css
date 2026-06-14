@@ -72,17 +72,6 @@ body {
   font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
   font-size: .9rem;
 }
-.preview__address {
-  display: flex; align-items: center; gap: 8px;
-  background: #0f1227;
-  border: 1px solid var(--border);
-  border-radius: 10px;
-  padding: 10px 12px;
-  margin-bottom: 12px;
-}
-.preview__address-text { flex: 1; color: var(--text); }
-.preview__icons { display: flex; gap: 6px; }
-.preview__icons svg { width: 18px; height: 18px; color: var(--muted); }
 .preview__msg {
   padding: 10px 8px;
   border-bottom: 1px solid var(--border-soft);
@@ -160,13 +149,10 @@ body {
 /* externalized inline styles so the page runs under CSP style-src 'self' */
 .demo-card { border-radius: 10px; padding: 12px; background: #0f1227; }
 .demo-card--accent { border: 1.5px solid var(--accent); margin-bottom: 14px; }
-.demo-card--primary { border: 1.5px solid var(--primary); }
 .demo-head--accent { font-family: Inter, sans-serif; font-size: .72rem; color: var(--accent); margin-bottom: 8px; }
-.demo-head--primary { font-family: Inter, sans-serif; font-size: .72rem; color: var(--primary); margin-bottom: 8px; }
 .demo-label { font-family: Inter, sans-serif; font-size: .68rem; color: var(--muted); }
 .demo-label--mt { margin-top: 6px; }
 .demo-value { color: var(--text); }
-.demo-mb10 { margin-bottom: 10px; }
 .demo-divider { border-top: 1px solid var(--border-soft); padding-top: 6px; }
 .footer__inner--mt6 { margin-top: 6px; }
 

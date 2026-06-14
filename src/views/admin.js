@@ -92,7 +92,7 @@ export function renderGoogleModal({ source = 'none', subject = '', domain = '', 
     : '<p class="gstatus-bad">✗ Noch nicht eingerichtet</p>';
 
   return `
-  <div id="gModal" data-modal-backdrop class="modal-overlay${modalOpen ? ' is-open' : ''}">
+  <div id="gModal" class="modal-overlay${modalOpen ? ' is-open' : ''}">
     <div class="modal-card">
       <h2 class="modal-title">Google-Konfiguration</h2>
       ${statusLine}
@@ -209,7 +209,7 @@ export function systemCheckCells(selfCheck = {}) {
   return {
     maildomain: selfCheck.mailDomainSet ? ok : '<span class="gdot gdot--bad">● fehlt — Adressen können nicht erzeugt werden</span>',
     enckey: selfCheck.encKeySet ? ok : '<span class="gdot gdot--bad">● fehlt — Mails würden UNVERSCHLÜSSELT gespeichert</span>',
-    db: `${ok} <span class="muted">erreichbar</span>`,
+    db: ok,
     lastmail: selfCheck.lastMailAt
       ? `${ok} <span class="muted">(zuletzt ${escape(new Date(selfCheck.lastMailAt).toISOString().slice(0, 16).replace('T', ' '))} UTC)</span>`
       : '<span class="muted">noch keine E-Mail empfangen</span>',
@@ -263,7 +263,7 @@ export function renderWorkshopDashboard({ workshop, serviceName, googleActive, g
       ${googleCounter}
     </div>`;
     stopModal = `
-    <div id="stopModal" data-modal-backdrop class="modal-overlay">
+    <div id="stopModal" class="modal-overlay">
       <div class="modal-card modal-card--sm">
         <div class="modal-warnhead">
           <span class="emoji-lg">⚠️</span>
@@ -280,7 +280,7 @@ export function renderWorkshopDashboard({ workshop, serviceName, googleActive, g
       </div>
     </div>`;
     qrModal = `
-    <div id="qrModal" data-modal-backdrop class="modal-overlay">
+    <div id="qrModal" class="modal-overlay">
       <div class="modal-card modal-card--qr">
         <img src="${escape(qrUrl)}" alt="QR-Code zum Workshop-Link" class="qr-img">
         <p class="muted qr-cap">${escape(workshopUrl)}</p>

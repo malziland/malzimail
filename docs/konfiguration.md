@@ -39,7 +39,3 @@ Der **Teilnehmer-Link** wird beim Klick auf **„Workshop starten"** automatisch
 | `MAIL_ENCRYPTION_KEY` | Schlüssel für die Mail-/Secret-Verschlüsselung (AES-GCM). Bleibt ein Secret (kann nicht in die DB, da er sie ja schützt). |
 | `COCKPIT_PASSWORD` | Admin-Passwort (Altweg, s. o.) |
 | `GOOGLE_SA_KEY` | Service-Account-JSON für die Google-Integration (Altweg). Üblicherweise wird der Schlüssel im Setup-Assistenten (Schritt 3) hinterlegt und landet AES-GCM-verschlüsselt in der DB; das Secret gilt nur, solange kein DB-Wert existiert. Google ist Pflichtbestandteil — ohne gültige Google-Konfiguration lässt sich die Installation nicht abschließen. |
-
-## Feature-Flags
-
-Schalter liegen ebenfalls in der `settings`-Tabelle als `flag_<name>` mit Wert `1`/`0` (Helfer: `isFlagEnabled` / `setFlag` in `src/domain/settings.js`). Grundlage für künftige optionale Funktionen, die pro Instanz an-/ausgeschaltet werden.

@@ -43,24 +43,8 @@ body {
   background: linear-gradient(90deg, var(--primary), var(--accent));
   -webkit-background-clip: text; background-clip: text; color: transparent;
 }
-.brand__slogan { color: var(--muted); font-size: .8rem; letter-spacing: .25px; }
-@media (max-width: 520px) { .brand__slogan { display: none; } }
 
 .shell { max-width: 760px; margin: 0 auto; padding: 28px 20px 80px; }
-
-.hero { margin-bottom: 28px; }
-.hero h1 { font-size: clamp(1.6rem, 3vw, 2.1rem); font-weight: 800; margin: 0 0 12px; line-height: 1.25; }
-.hero .accent {
-  background: linear-gradient(90deg, var(--primary), var(--accent));
-  -webkit-background-clip: text; background-clip: text; color: transparent;
-}
-.hero__sub { color: var(--text-soft); margin: 0 0 14px; max-width: 64ch; }
-.hero__ticks {
-  list-style: none; margin: 0; padding: 0;
-  display: flex; flex-wrap: wrap; gap: 8px 18px;
-  color: var(--text-soft); font-size: .9rem;
-}
-.hero__ticks li::before { content: "✓ "; color: var(--accent); font-weight: 700; }
 
 .step {
   background: var(--bg-card);
@@ -103,7 +87,6 @@ body {
 }
 .meta-pill.is-warn { color: var(--warn); border-color: rgba(255,181,71,.4); }
 .meta-pill.is-danger { color: var(--danger); border-color: rgba(239,68,68,.4); }
-.meta-pill.is-demo { color: var(--accent); border-color: rgba(0,209,178,.4); }
 
 .address-row { display: flex; gap: 8px; align-items: stretch; }
 .address-row input {

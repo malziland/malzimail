@@ -3,7 +3,7 @@ import { env } from 'cloudflare:test';
 import {beforeEach, describe, it, expect} from 'vitest';
 import {
   getSetting, setSetting, deleteSetting,
-  resolveConfig, isFlagEnabled, setFlag,
+  resolveConfig,
 } from '../../src/domain/settings.js';
 
 
@@ -48,19 +48,5 @@ describe('resolveConfig precedence (DB -> env/secret -> default)', () => {
 
   it('falls back to the default when DB and env are both empty', async () => {
     expect(await resolveConfig(env, 'missing', 'NOPE', 'def')).toBe('def');
-  });
-});
-
-describe('feature flags', () => {
-  it('uses the given default when unset', async () => {
-    expect(await isFlagEnabled(env, 'google')).toBe(false);
-    expect(await isFlagEnabled(env, 'google', true)).toBe(true);
-  });
-
-  it('reflects the stored value', async () => {
-    await setFlag(env, 'google', true);
-    expect(await isFlagEnabled(env, 'google')).toBe(true);
-    await setFlag(env, 'google', false);
-    expect(await isFlagEnabled(env, 'google')).toBe(false);
   });
 });

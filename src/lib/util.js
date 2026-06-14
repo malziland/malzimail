@@ -1,6 +1,6 @@
 // Pure helpers with no domain/db dependencies.
 
-export const RANDOM_CHARS = 'abcdefghijkmnpqrstuvwxyz23456789';
+const RANDOM_CHARS = 'abcdefghijkmnpqrstuvwxyz23456789';
 
 export function randomString(length) {
   const bytes = new Uint8Array(length);
