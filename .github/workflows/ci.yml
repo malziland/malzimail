@@ -19,7 +19,11 @@ jobs:
           cache: npm
 
       - name: Install dependencies
-        run: npm ci
+        # npm install (nicht npm ci): einige Dev-Abhängigkeiten bringen plattform-
+        # spezifische optionale Native-Bindings mit (z. B. @emnapi/*), die eine auf
+        # macOS erzeugte Lockfile für Linux nicht festhält — das strikte npm ci würde
+        # daran scheitern. npm install löst die Plattform-Deps auf dem Runner selbst auf.
+        run: npm install --no-audit --no-fund
 
       - name: Lint
         run: npm run lint
