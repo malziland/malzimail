@@ -1,0 +1,132 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow,noarchive,nosnippet">
+<meta name="theme-color" content="#6C5CE7">
+<title>malziMAIL – Workshop-Mail</title>
+<link rel="stylesheet" href="/app.css">
+</head>
+<body>
+
+<header class="topbar">
+  <div class="topbar__inner topbar__inner--row">
+    <a class="brand" href="/">
+      <span class="brand__mark">malzi<span class="gradient">MAIL</span></span>
+    </a>
+    <span id="workshop-pill" class="meta-pill pill--active" hidden>Workshop aktiv</span>
+  </div>
+</header>
+
+<main class="shell">
+
+  <section class="step step--reset" id="reset-notice" hidden>
+    <h2 class="step__title reset-title" id="reset-title">Sitzung zurückgesetzt</h2>
+    <p class="step__help" id="reset-text">Deine Trainerin oder dein Trainer hat alle Zugänge zurückgesetzt. Deine bisherige Adresse und der zugehörige Google-Login gelten nicht mehr.</p>
+    <button type="button" id="reset-reload" class="btn btn--primary mt-8">Jetzt neue Adresse laden</button>
+  </section>
+
+  <!-- Eine Karte: "Mit Google anmelden" — E-Mail-Adresse (zugleich Google-Login) + Passwort + Posteingang.
+       Dieselbe Adresse ist Postfach und Google-Login zugleich. Greift Google im Einzelfall nicht
+       (50-Konten-Limit/Fehler), zeigt die Karte die reine Mail-Adresse als Fallback. -->
+  <section class="step step--mail" id="step-main">
+    <div class="step__badge badge--primary" id="main-badge">
+      <span id="badge-google" hidden>★</span>
+      <svg id="badge-mail" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon-18">
+        <rect x="3" y="5" width="18" height="14" rx="2"></rect>
+        <path d="m3 7 9 6 9-6"></path>
+      </svg>
+    </div>
+    <h2 class="step__title" id="main-title">Deine Mail-Adresse</h2>
+    <p class="step__help" id="address-help">Wird gleich erzeugt …</p>
+
+    <div class="step__meta">
+      <span id="expires-info" class="meta-pill">…</span>
+    </div>
+
+    <!-- Google-Login: E-Mail-Adresse (zugleich Login) + Passwort -->
+    <div id="google-block" hidden>
+      <p class="cred-label">E-Mail-Adresse <span class="muted">(zugleich dein Login)</span></p>
+      <div class="address-row">
+        <input id="google-login" readonly value="" aria-label="E-Mail-Adresse / Google-Login">
+        <button id="google-login-copy" class="btn--icon" type="button" title="E-Mail kopieren" aria-label="E-Mail kopieren">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+            <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+          </svg>
+        </button>
+      </div>
+      <p class="cred-label cred-label--mt">Passwort</p>
+      <div class="address-row">
+        <input id="google-pass" readonly value="" aria-label="Google-Passwort">
+        <button id="google-pass-copy" class="btn--icon" type="button" title="Passwort kopieren" aria-label="Passwort kopieren">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+            <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+          </svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- Fallback-Anzeige der reinen Mail-Adresse; im Normalbetrieb ist die E-Mail oben zugleich der Google-Login. -->
+    <div id="mail-block">
+      <div class="address-row">
+        <input id="address" readonly value="" aria-label="Deine temporäre Mail-Adresse" placeholder="…">
+        <button id="copy" class="btn--icon" type="button" title="Adresse kopieren" aria-label="Adresse kopieren">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+            <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+          </svg>
+        </button>
+      </div>
+    </div>
+
+    <p id="google-msg" class="step__tip tip--error" hidden></p>
+
+    <div class="inbox-sec">
+      <p class="step__help inbox-help" id="inbox-help">
+        <strong class="text-strong">Posteingang</strong> — hier erscheinen alle Mails an diese Adresse, automatisch. Kein Knopfdruck nötig.
+      </p>
+      <ul class="messages" id="messages" hidden></ul>
+      <div class="empty" id="empty">
+        <div class="empty__pulse"></div>
+        <span id="inbox-status">Noch keine Nachrichten. Sobald eine Mail eintrifft, siehst du sie hier.</span>
+      </div>
+    </div>
+  </section>
+
+
+</main>
+
+<footer class="footer">
+  <div class="footer__inner">
+    <span>&copy; 2026 malziMAIL</span>
+    <span class="footer__sep">·</span>
+    <span>powered by malziland</span>
+  </div>
+  <div class="footer__inner footer__inner--mt6">
+    <a href="/impressum">Impressum</a>
+    <span class="footer__sep">·</span>
+    <a href="/datenschutz">Datenschutz</a>
+    <span class="footer__sep">·</span>
+    <a href="/nutzungsbedingungen">Nutzungsbedingungen</a>
+  </div>
+</footer>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<dialog id="detail" class="detail">
+  <header class="detail__head">
+    <div class="detail__head-text">
+      <h3 id="detail-subject"></h3>
+      <p id="detail-meta"></p>
+    </div>
+    <button class="detail__close" id="detail-close" aria-label="Schließen">&times;</button>
+  </header>
+  <div class="detail__body" id="detail-body"></div>
+</dialog>
+
+<script src="/app.js"></script>
+</body>
+</html>

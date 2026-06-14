@@ -1,0 +1,35 @@
+{
+  "name": "malzimail",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "license": "MIT",
+  "author": "Christoph Krieger (malziland e.U.)",
+  "scripts": {
+    "dev": "wrangler dev",
+    "deploy": "wrangler deploy",
+    "deploy:dev": "wrangler deploy --env dev",
+    "db:migrate:local": "wrangler d1 migrations apply malzimail --local",
+    "db:migrate:remote": "wrangler d1 migrations apply malzimail --remote",
+    "db:migrate:dev": "wrangler d1 migrations apply malzimail-dev --remote --env dev",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:coverage": "vitest run --coverage",
+    "lint": "eslint .",
+    "check": "npm run lint && npm test",
+    "setup": "node scripts/setup.mjs"
+  },
+  "devDependencies": {
+    "@cloudflare/vitest-pool-workers": "^0.16.15",
+    "@eslint/js": "^10.0.1",
+    "@vitest/coverage-istanbul": "^4.1.8",
+    "eslint": "^10.5.0",
+    "globals": "^17.6.0",
+    "vitest": "^4.1.8",
+    "wrangler": "^4.0.0"
+  },
+  "dependencies": {
+    "postal-mime": "^2.4.0",
+    "qrcode-svg": "^1.1.0"
+  }
+}

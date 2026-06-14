@@ -1,0 +1,45 @@
+# Continuous Integration: runs on every push and pull request.
+# Becomes active as soon as this repository is pushed to GitHub.
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Tests + Coverage (≥80% Gate)
+        run: npm run test:coverage
+
+      # Scan the dependencies that actually ship in the Worker. Build/test tools
+      # (esbuild, wrangler, vitest) are kept current via Dependabot instead, so
+      # a dev-tool advisory does not block the pipeline.
+      - name: Audit shipped dependencies
+        run: npm audit --omit=dev --audit-level=high
+
+  # Secret scanning: fail the build if any credential pattern is committed
+  # (full history checkout so historical leaks are caught too).
+  secret-scan:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Secret scan (gitleaks)
+        uses: gitleaks/gitleaks-action@v2

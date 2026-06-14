@@ -1,0 +1,75 @@
+{
+  // ── Vorlage für Self-Hoster ──────────────────────────────────────────────
+  // Kopiere diese Datei nach `wrangler.jsonc` und ersetze die mit << >> markierten
+  // Platzhalter durch deine eigenen Werte. Schritt-für-Schritt: docs/installation-anleitung.md.
+  // Secrets (COCKPIT_PASSWORD, MAIL_ENCRYPTION_KEY, GOOGLE_SA_KEY) kommen NICHT hierher,
+  // sondern via `npx wrangler secret put <NAME>`.
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "<<dein-worker-name>>",
+  "main": "src/index.js",
+  "compatibility_date": "2026-05-27",
+  "compatibility_flags": ["nodejs_compat"],
+
+  "vars": {
+    "MAIL_DOMAIN": "<<deine-domain.at>>",
+    "ADDRESS_TTL_HOURS": "48",
+    // Optional (nur falls du die Google-Login-Funktion nutzt):
+    "GOOGLE_ADMIN_SUBJECT": "<<admin@id.deine-domain.at>>",
+    "GOOGLE_ACCOUNT_DOMAIN": "<<deine-domain.at>>"
+  },
+
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "<<dein-d1-name>>",
+      "database_id": "<<deine-d1-database-id>>",
+      "migrations_dir": "migrations"
+    }
+  ],
+
+  "routes": [
+    { "pattern": "<<deine-domain.at>>", "custom_domain": true }
+  ],
+
+  "triggers": {
+    "crons": ["0 */6 * * *"]
+  },
+
+  "assets": {
+    "directory": "public",
+    "binding": "ASSETS"
+  },
+
+  "observability": {
+    "enabled": true
+  },
+
+  // Optionale Test-Instanz (eigener Worker + eigene D1, über workers.dev erreichbar),
+  // um Änderungen vor der Produktion zu erproben. Kann entfernt werden, wenn du
+  // keine separate Test-Instanz brauchst.
+  "env": {
+    "dev": {
+      "name": "<<dein-worker-name>>-dev",
+      "workers_dev": true,
+      // MUSS leer bleiben: verhindert, dass die Test-Instanz die Produktions-
+      // Custom-Domain erbt und kapert.
+      "routes": [],
+      "vars": {
+        "MAIL_DOMAIN": "<<deine-domain.at>>",
+        "ADDRESS_TTL_HOURS": "48",
+        "GOOGLE_ADMIN_SUBJECT": "<<admin@id.deine-domain.at>>",
+        "GOOGLE_ACCOUNT_DOMAIN": "<<deine-domain.at>>"
+      },
+      "d1_databases": [
+        {
+          "binding": "DB",
+          "database_name": "<<dein-d1-name>>-dev",
+          "database_id": "<<deine-dev-d1-database-id>>",
+          "migrations_dir": "migrations"
+        }
+      ],
+      "triggers": { "crons": ["0 */6 * * *"] },
+      "assets": { "directory": "public", "binding": "ASSETS" }
+    }
+  }
+}
