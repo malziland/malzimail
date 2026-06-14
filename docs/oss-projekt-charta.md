@@ -76,7 +76,7 @@ Drei getrennte Fragen, alle vor dem öffentlichen Release zu klären:
 - Migrationen nummeriert und additiv (bestehende Praxis) — nie destruktiv ohne Backup-Hinweis.
 
 ### 2d. Erweiterungs-Ideen-Speicher
-- `docs/roadmap.md` sammelt Zukunftsideen (Mehr-Sprachen, mehrere Google-Tenants für >50 Konten, andere KI-Dienste, Statistik-Export, Theming). Nicht jetzt bauen — aber sichtbar parken, damit Architektur sie nicht verbaut.
+- Zukunftsideen (Mehr-Sprachen, mehrere Google-Tenants für >50 Konten, andere KI-Dienste, Statistik-Export, Theming) werden bewusst geparkt: nicht jetzt bauen — aber im Blick behalten, damit die Architektur sie nicht verbaut.
 
 ---
 

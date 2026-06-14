@@ -82,7 +82,6 @@ malzimail/
    ├─ oss-projekt-charta.md       (vorhanden)
    ├─ oss-umbau-konzept.md        (vorhanden)
    ├─ projektstruktur.md          (dieses Dokument)
-   ├─ roadmap.md                  (vorhanden)
    └─ legal/                      (vorhanden, DPA-PDF)
 ```
 

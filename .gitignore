@@ -19,6 +19,9 @@ docs/links.md
 # Internal AI-steering doc (dev passwords, internal ops notes) — local only, never published
 CLAUDE.md
 
+# Roadmap / Zukunftsideen — interne Planung, nicht öffentlich
+docs/roadmap.md
+
 # Test & build artifacts
 coverage/
 .vitest/

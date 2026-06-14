@@ -15,5 +15,5 @@ labels: enhancement
 
 
 **Passt das zum Projekt-Scope?**
-Bitte kurz prüfen gegen die bewussten Scope-Grenzen in [docs/roadmap.md](../../docs/roadmap.md)
+Bitte kurz gegen den bewussten Projekt-Rahmen prüfen
 (1 Instanz = 1 Betreiber = 1 Workshop, kein Trainer-System).
