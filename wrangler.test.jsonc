@@ -1,0 +1,32 @@
+{
+  // ── Konfiguration NUR für die Test-Suite (vitest) ────────────────────────
+  // Generische, nicht-betreiber-spezifische Werte. Committet, damit CI + jeder
+  // Klon die Tests ohne die echte (gitignorete) wrangler.jsonc laufen lassen kann.
+  // Die Tests nutzen eine LOKALE D1 (miniflare) — die database_id ist nur ein Label.
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "malzimail-test",
+  "main": "src/index.js",
+  "compatibility_date": "2026-05-27",
+  "compatibility_flags": ["nodejs_compat"],
+
+  "vars": {
+    "MAIL_DOMAIN": "example.test",
+    "ADDRESS_TTL_HOURS": "48",
+    "GOOGLE_ADMIN_SUBJECT": "admin@id.example.test",
+    "GOOGLE_ACCOUNT_DOMAIN": "example.test"
+  },
+
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "malzimail-test",
+      "database_id": "test-local-d1",
+      "migrations_dir": "migrations"
+    }
+  ],
+
+  "assets": {
+    "directory": "public",
+    "binding": "ASSETS"
+  }
+}

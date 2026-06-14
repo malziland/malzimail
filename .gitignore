@@ -1,0 +1,32 @@
+node_modules/
+.wrangler/
+.dev.vars
+.dev.vars.*
+.env
+.env.*
+*.log
+.DS_Store
+
+# Secrets / keys must never enter the repo
+*service-account*.json
+*sa-key*.json
+malzimail-konten-*.json
+*.pem
+*.p12
+# Operator's private credential notes — local only, never committed
+docs/links.md
+
+# Internal AI-steering doc (dev passwords, internal ops notes) — local only, never published
+CLAUDE.md
+
+# Test & build artifacts
+coverage/
+.vitest/
+
+# Local editor/tooling
+.claude/
+.idea/
+.vscode/
+
+# Echte Deploy-Config (pro Installation; aus der Vorlage / via npm run setup erzeugt)
+wrangler.jsonc
