@@ -40,7 +40,11 @@ Architektur: [docs/architektur.md](docs/architektur.md) · Ziel-Struktur: [docs/
 
 ## Lizenz
 
-**MIT** — siehe [LICENSE](LICENSE). © 2026 Christoph Krieger (malziland - learning | training | consulting e.U.).
+**Code: MIT** — siehe [LICENSE](LICENSE). © 2026 Christoph Krieger (malziland - learning | training | consulting e.U.).
+
+**Ausgenommen: Marke.** Die Namen, Logos und Markendateien von malziland/malziMAIL (m-Monogramm, Favicons, Dateien unter [`public/img/brand/`](public/img/brand/)) sind **nicht** MIT-lizenziert — Details in [TRADEMARKS.md](TRADEMARKS.md).
+
+**Schriften:** Poppins wird selbst gehostet und steht unter der SIL Open Font License — Lizenztext in [`public/fonts/poppins/OFL.txt`](public/fonts/poppins/OFL.txt).
 
 ## Haftungsausschluss
 

@@ -1,55 +1,14 @@
-/* malziMAIL participant SPA styles — externalized from app.html (CSP style-src 'self'). */
-:root {
-  --bg: #0f1020;
-  --bg-card: #14162b;
-  --bg-input: #0f1227;
-  --text: #e4e6ed;
-  --text-soft: #cbd5e1;
-  --muted: #9ca3af;
-  --border: rgba(255,255,255,.08);
-  --border-soft: rgba(255,255,255,.06);
-  --primary: #6C5CE7;
-  --accent: #00D1B2;
-  --warn: #ffb547;
-  --danger: #ef4444;
-  --success: #10b981;
-}
-* { box-sizing: border-box; }
-html, body { margin: 0; padding: 0; overflow-x: hidden; }
-body {
-  background:
-    radial-gradient(1200px 600px at 80% -10%, rgba(108,92,231,.25), transparent 60%),
-    radial-gradient(800px 500px at -10% 10%, rgba(0,209,178,.18), transparent 60%),
-    var(--bg);
-  color: var(--text);
-  font: 16px/1.6 Inter, system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
-  min-height: 100vh;
-}
-.topbar {
-  position: sticky; top: 0; z-index: 20;
-  background: rgba(15,16,32,.85);
-  backdrop-filter: saturate(180%) blur(8px);
-  -webkit-backdrop-filter: saturate(180%) blur(8px);
-  border-bottom: 1px solid var(--border);
-}
-.topbar__inner {
-  max-width: 880px; margin: 0 auto;
-  padding: 14px 20px;
-  display: flex; align-items: center; justify-content: space-between;
-}
-.brand { display: flex; align-items: baseline; gap: 12px; color: var(--text); text-decoration: none; }
-.brand__mark { font-weight: 900; font-size: 1.35rem; letter-spacing: .2px; }
-.gradient {
-  background: linear-gradient(90deg, var(--primary), var(--accent));
-  -webkit-background-clip: text; background-clip: text; color: transparent;
-}
+/* malziMAIL Teilnehmer-SPA — malziland-CI (Prototyp). Selektoren = public/app.css. */
+@import url("/tokens.css");
 
-.shell { max-width: 760px; margin: 0 auto; padding: 28px 20px 80px; }
+.shell { position: relative; z-index: 1; max-width: 760px; margin: 0 auto; padding: 28px 20px 80px; }
 
+/* ── Step-Karte: weiß, flach, ruhig ── */
 .step {
   background: var(--bg-card);
   border: 1px solid var(--border-soft);
-  border-radius: 18px;
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow);
   padding: 22px 22px 20px;
   margin-bottom: 16px;
   position: relative;
@@ -57,36 +16,39 @@ body {
 .step__badge {
   position: absolute; top: -12px; left: 22px;
   width: 32px; height: 32px;
-  background: linear-gradient(90deg, var(--primary), var(--accent));
-  color: #0a0a0a; font-weight: 800;
-  border-radius: 999px;
+  background: var(--ml-grad-teal);
+  color: #ffffff; font-weight: 700;
+  border-radius: var(--radius-pill);
   display: flex; align-items: center; justify-content: center;
-  font-size: .95rem;
+  font-size: 0.95rem;
 }
-.step__title { margin: 4px 0 6px; font-size: 1.1rem; }
-.step__help { color: var(--muted); margin: 0 0 14px; font-size: .92rem; }
+.step__title { margin: 4px 0 6px; font-size: 1.1rem; font-weight: 700; color: var(--heading); }
+.step__help { color: var(--muted); margin: 0 0 14px; font-size: 0.92rem; }
 .step__tip {
   margin: 14px 0 0;
   padding: 10px 12px;
-  background: rgba(108,92,231,.10);
-  border-left: 3px solid var(--primary);
-  border-radius: 8px;
-  font-size: .88rem;
+  background: var(--tint-teal);
+  border-left: 2px solid var(--ml-teal);
+  border-radius: var(--radius-sm);
+  font-size: 0.88rem;
   color: var(--text-soft);
 }
 .step__tip strong { color: var(--text); }
-.step__meta { margin-top: 10px; display: flex; flex-wrap: wrap; align-items: center; gap: 12px; }
+/* Abstand unter der Countdown-Pille = Abstand darüber (Rückmeldung 13.07.) */
+.step__meta { margin: 10px 0 14px; display: flex; flex-wrap: wrap; align-items: center; gap: 12px; }
+/* Countdown-Pille vollständig in Teal (Rückmeldung 13.07.) */
 .meta-pill {
   display: inline-block;
-  background: rgba(255,255,255,.04);
-  border: 1px solid var(--border-soft);
-  border-radius: 999px;
+  background: transparent;
+  border: 1px solid var(--ml-teal);
+  border-radius: var(--radius-pill);
   padding: 3px 10px;
-  font-size: .82rem;
-  color: var(--text-soft);
+  font-size: 0.82rem;
+  color: var(--teal-text);
+  font-variant-numeric: tabular-nums;
 }
-.meta-pill.is-warn { color: var(--warn); border-color: rgba(255,181,71,.4); }
-.meta-pill.is-danger { color: var(--danger); border-color: rgba(239,68,68,.4); }
+.meta-pill.is-warn { color: var(--warn); border-color: var(--warn-border); }
+.meta-pill.is-danger { color: var(--danger); border-color: var(--danger-border); }
 
 .address-row { display: flex; gap: 8px; align-items: stretch; }
 .address-row input {
@@ -95,17 +57,18 @@ body {
   background: var(--bg-input);
   border: 1px solid var(--border);
   color: var(--text);
-  border-radius: 12px;
+  border-radius: var(--radius-md);
   padding: 12px 14px;
-  letter-spacing: .2px;
+  letter-spacing: 0.2px;
 }
-.address-row input:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 0 3px rgba(108,92,231,.2); }
+.address-row input:focus { outline: none; border-color: var(--ml-teal); box-shadow: 0 0 0 3px var(--tint-teal-strong); }
 
+/* ── Buttons: Haupt-CTA = Teal-Verlauf (Inhaber-Entscheidung) ── */
 .btn {
   display: inline-flex; align-items: center; justify-content: center;
   font: inherit; font-weight: 700;
   padding: 12px 22px;
-  border-radius: 12px;
+  border-radius: var(--radius-md);
   border: 1px solid transparent;
   cursor: pointer;
   white-space: nowrap;
@@ -114,29 +77,29 @@ body {
   line-height: 1.2;
 }
 .btn--primary {
-  background: transparent;
-  color: var(--success);
-  border: 1px solid rgba(16,185,129,.55);
-  font-weight: 600;
-  transition: background .15s;
+  background: var(--ml-grad-teal);
+  color: #ffffff;
+  border: none;
+  transition: filter 0.2s var(--ease);
 }
-.btn--primary:hover { background: rgba(16,185,129,.12); }
-.btn--primary:active { background: rgba(16,185,129,.18); }
+.btn--primary:hover { filter: brightness(0.92); }
+.btn--primary:active { filter: brightness(0.88); }
 .btn--ghost { background: transparent; border: 1px solid var(--border); color: var(--text); }
-.btn--ghost:hover { background: rgba(255,255,255,.05); }
+.btn--ghost:hover { background: var(--hover); }
 .btn--icon {
   background: transparent;
   border: 1px solid var(--border);
   color: var(--text);
   padding: 0; width: 46px; height: 46px;
   display: inline-flex; align-items: center; justify-content: center;
-  border-radius: 12px; cursor: pointer;
-  transition: background .15s, border-color .15s, color .15s;
+  border-radius: var(--radius-md); cursor: pointer;
+  transition: background 0.15s var(--ease), border-color 0.15s var(--ease), color 0.15s var(--ease);
 }
-.btn--icon:hover { background: rgba(255,255,255,.06); border-color: var(--primary); color: var(--accent); }
+.btn--icon:hover { background: var(--hover); border-color: var(--ml-teal); color: var(--teal-text); }
 .btn--icon svg { width: 20px; height: 20px; display: block; }
-.btn:disabled { opacity: .5; cursor: not-allowed; transform: none; }
+.btn:disabled { opacity: 0.45; cursor: not-allowed; transform: none; }
 
+/* ── Posteingang ── */
 .messages { list-style: none; margin: 0; padding: 0; }
 .messages li {
   display: grid;
@@ -145,87 +108,96 @@ body {
   padding: 14px 6px;
   border-bottom: 1px solid var(--border-soft);
   cursor: pointer;
-  transition: background .15s;
+  transition: background 0.15s var(--ease);
 }
-.messages li:hover { background: rgba(255,255,255,.03); }
+.messages li:hover { background: var(--hover); }
 .messages li:last-child { border-bottom: none; }
-.msg-from { font-weight: 600; }
+.msg-from { font-weight: 700; }
 .msg-subject { color: var(--text-soft); }
-.msg-time { font-size: .85rem; color: var(--muted); align-self: start; }
+.msg-time { font-size: 0.85rem; color: var(--muted); align-self: start; font-variant-numeric: tabular-nums; }
 
 .empty {
   padding: 16px;
   border: 1px dashed var(--border);
-  border-radius: 12px;
+  border-radius: var(--radius-md);
   color: var(--muted);
-  font-size: .92rem;
+  font-size: 0.92rem;
   display: flex; align-items: center; gap: 10px;
 }
+/* Puls-Punkt: bestehende funktionale Live-Anzeige, bleibt (jetzt Teal) */
 .empty__pulse {
   width: 8px; height: 8px; border-radius: 50%;
-  background: var(--accent);
+  background: var(--ml-teal);
   animation: pulse 1.6s ease-in-out infinite;
 }
+:root[data-theme="dark"] .empty__pulse { background: #4698b9; }
 @keyframes pulse {
-  0%,100% { opacity: .25; transform: scale(.9); }
-  50%     { opacity: 1;   transform: scale(1.2); }
+  0%, 100% { opacity: 0.25; transform: scale(0.9); }
+  50%      { opacity: 1;    transform: scale(1.2); }
 }
 
+/* ── Footer (einzeilig; z-index 0, damit Modals darüber liegen) ── */
 .footer {
-  border-top: 1px solid var(--border);
+  position: relative; z-index: 0;
+  border-top: 1px solid var(--border-soft);
   margin-top: 30px;
   padding: 18px 20px;
-  color: var(--muted); font-size: .88rem;
+  color: var(--muted); font-size: 0.88rem;
 }
 .footer__inner {
   max-width: 880px; margin: 0 auto;
   display: flex; justify-content: center; gap: 8px; flex-wrap: wrap;
 }
-.footer__sep { opacity: .5; }
-.footer a { color: var(--muted); text-decoration: none; border-bottom: 1px dotted rgba(255,255,255,.2); }
-.footer a:hover { color: var(--text); }
+.footer__sep { opacity: 0.5; }
+.footer a { color: var(--muted); text-decoration: none; border-bottom: 1px dotted var(--border); }
+.footer a:hover { color: var(--teal-text); }
 
+/* ── Toast ── */
 .toast {
   position: fixed; left: 50%; bottom: 24px;
   transform: translateX(-50%) translateY(20px);
   background: var(--bg-card);
   border: 1px solid var(--border);
+  box-shadow: var(--shadow);
   color: var(--text);
   padding: 10px 18px;
-  border-radius: 999px;
-  font-size: .9rem;
+  border-radius: var(--radius-pill);
+  font-size: 0.9rem;
   opacity: 0; pointer-events: none;
-  transition: opacity .2s, transform .2s;
+  transition: opacity 0.2s var(--ease), transform 0.2s var(--ease);
   z-index: 100;
 }
 .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
 
+/* ── Mail-Detail ── */
 .detail {
   border: 1px solid var(--border);
-  border-radius: 16px;
+  border-radius: var(--radius-lg);
   padding: 0;
   width: 92%; max-width: 720px;
   max-height: 88vh;
   background: var(--bg-card);
   color: var(--text);
+  box-shadow: var(--shadow);
 }
-.detail::backdrop { background: rgba(0,0,0,.55); backdrop-filter: blur(2px); }
+.detail::backdrop { background: var(--scrim); }
 .detail__head {
   padding: 16px 18px 14px;
-  border-bottom: 1px solid var(--border-soft);
+  border-bottom: 2px solid var(--ml-teal);
   display: flex; justify-content: space-between; align-items: flex-start; gap: 16px;
 }
-.detail__head-text h3 { margin: 0 0 4px; font-size: 1.05rem; }
-.detail__head-text p { margin: 0; color: var(--muted); font-size: .85rem; }
+.detail__head-text h3 { margin: 0 0 4px; font-size: 1.05rem; color: var(--heading); }
+.detail__head-text p { margin: 0; color: var(--muted); font-size: 0.85rem; }
 .detail__close {
   background: transparent; border: none; color: var(--muted);
   font-size: 1.6rem; line-height: 1; cursor: pointer; padding: 0 6px;
 }
 .detail__close:hover { color: var(--text); }
 .detail__close:focus, .detail__close:focus-visible { outline: none; }
+/* Mail-Inhalt bleibt weiß (Mails sind für Weiß gestaltet) — wie im Original */
 .detail__body { padding: 0; max-height: 70vh; overflow: auto; background: #fff; color: #1a1a1a; }
 .detail__body iframe { width: 100%; border: none; min-height: 60vh; display: block; }
-.detail__body pre { margin: 0; padding: 16px; font: .92rem ui-monospace, monospace; white-space: pre-wrap; word-break: break-word; background: #fff; color: #1a1a1a; }
+.detail__body pre { margin: 0; padding: 16px; font: 0.92rem ui-monospace, monospace; white-space: pre-wrap; word-break: break-word; background: #fff; color: #1a1a1a; }
 
 @media (max-width: 520px) {
   .address-row input { min-width: 0; }
@@ -234,21 +206,24 @@ body {
   .msg-time { margin-top: 4px; }
 }
 
-/* externalized inline styles so the page runs under CSP style-src 'self' */
+/* ── Zustands-Klassen (ehemals inline; Namen unverändert) ── */
 .topbar__inner--row { gap: 12px; }
-.pill--active { background: rgba(16,185,129,.12); border-color: rgba(16,185,129,.35); color: #10b981; font-weight: 600; }
-.step--reset { border: 1.5px solid #ef4444; }
-.reset-title { color: #ff8a80; }
+.pill--active { background: var(--tint-teal); border-color: var(--ml-teal); color: var(--teal-text); font-weight: 700; }
+.step--reset { border: 1.5px solid var(--danger-border); }
+.reset-title { color: var(--danger); }
 .mt-8 { margin-top: 8px; }
-.step--google { border: 1.5px solid var(--accent); }
-.badge--accent { background: var(--accent); }
-.badge--primary { background: var(--primary); }
-.cred-label { margin: 0 0 4px; font-size: .8rem; color: var(--muted); }
+/* Karten-Unterscheidung: Google = 2px-Teal-Rahmen (Featured), Mail = Teal-Topbar */
+.step--google { border: 2px solid var(--ml-teal); }
+.badge--accent { background: var(--ml-grad-teal); }
+.badge--primary { background: var(--ml-grad-teal); }
+.cred-label { margin: 0 0 4px; font-size: 0.8rem; color: var(--muted); }
 .cred-label--mt { margin: 10px 0 4px; }
-.tip--error { color: #ffb4a8; }
-.step--mail { border: 1.5px solid var(--primary); }
+.tip--error { background: var(--tint-rust); border-left-color: var(--ml-rust); color: var(--rust-text); }
+.step--mail { border-top: 2px solid var(--ml-teal); }
 .icon-18 { width: 18px; height: 18px; }
+.badge-star { width: 16px; height: 16px; display: block; }
 .inbox-sec { border-top: 1px solid var(--border-soft); margin-top: 16px; padding-top: 14px; }
 .inbox-help { margin: 0 0 12px; }
-.text-strong { color: var(--text); }
+.text-strong { color: var(--text); font-weight: 700; }
 .footer__inner--mt6 { margin-top: 6px; }
+.muted { color: var(--muted); }

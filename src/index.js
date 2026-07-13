@@ -155,27 +155,11 @@ export default {
   }
 };
 
-// Finalize an HTML response before sending: on an un-personalized instance (no
-// operator configured = the original malziland / COMPANY instance) the footer
-// credit reads "powered by malziland"; a configured OSS instance keeps the neutral
-// "powered by malziMAIL". Then apply the security headers. Lives here (composition
-// root) rather than in lib/http so the transport layer stays free of domain imports.
+// Finalize a response before sending: apply the security headers (strict CSP etc.).
+// The footer credit is no longer rewritten per instance — the attribution
+// "powered by malziland" is fixed in the views on every instance (owner ruling,
+// CI redesign 07/2026): "malziMAIL" names the service, "malziland" is the maker.
 export async function finalize(env, response, pathname) {
-  const ct = response.headers.get('content-type') || '';
-  if (ct.includes('text/html')) {
-    const ctx = await getLegalContext(env);
-    if (!ctx.configured) {
-      // Read the body once, then ALWAYS rebuild from the read text — reusing the
-      // original (now-consumed) stream in withSecurity would throw "disturbed".
-      // Match the exact footer div only — never arbitrary body/legal text that
-      // might happen to contain the brand string.
-      let html = await response.text();
-      html = html.split('<div>powered by malziMAIL</div>').join('<div>powered by malziland</div>');
-      response = new Response(html, {
-        status: response.status, statusText: response.statusText, headers: response.headers,
-      });
-    }
-  }
   return withSecurity(response, pathname);
 }
 

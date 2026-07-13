@@ -26,6 +26,12 @@ export function htmlResponse(body, status = 200) {
   });
 }
 
+// SHA-256 of the theme-init inline snippet (see THEME_INIT_SNIPPET in
+// src/views/layout.js — the static pages public/app.html and public/landing.html
+// carry the identical bytes). Recompute when the snippet changes:
+//   printf '%s' "<snippet>" | openssl dgst -sha256 -binary | base64
+export const THEME_INIT_HASH = 'sha256-1qDDxG61oeR7u05w+juAc+BzZO81tMiw8zlqYB6Q8iw=';
+
 export function withSecurity(response, pathname) {
   const headers = new Headers(response.headers);
   headers.set('strict-transport-security', 'max-age=31536000; includeSubDomains');
@@ -48,13 +54,17 @@ export function withSecurity(response, pathname) {
   if (!headers.has('content-security-policy')) {
     if (ct.includes('text/html')) {
       // Strict CSP, no 'unsafe-inline' anywhere: all JS is externalized (public/app.js,
-      // public/admin.js) and all CSS lives in linked stylesheets (shell/app/landing.css) —
+      // public/admin.js, public/theme.js) and all CSS lives in linked stylesheets —
       // markup carries no inline <script>/onclick or style=. Injected inline code cannot
       // execute. (admin.js still toggles modals via element.style.* — CSSOM property
       // setters are not gated by style-src, so that keeps working.)
+      // Single exception, allow-listed by hash (NOT unsafe-inline): the tiny theme-init
+      // snippet in every page <head> that applies the stored dark theme before first
+      // paint (no color flash). Its exact bytes are pinned by THEME_INIT_HASH — any
+      // other inline script still cannot run. Keep snippet + hash in sync!
       headers.set('content-security-policy',
         "default-src 'self'; " +
-        "script-src 'self'; " +
+        `script-src 'self' '${THEME_INIT_HASH}'; ` +
         "style-src 'self'; " +
         "img-src 'self' data: blob:; " +
         "font-src 'self'; " +

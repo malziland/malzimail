@@ -1,0 +1,218 @@
+/* ═══════════════════════════════════════════════════════════════
+   malziMAIL — malziland-CI (Prototyp)
+   Quelle: malziland Design System 2026 (tokens/colors|typography|spacing)
+   + Referenz-Implementierung malzime (public/styles.css).
+   Hell = Standard (Inhaber-Entscheidung 13.07.2026), Dunkel = Kap. 11.
+   ═══════════════════════════════════════════════════════════════ */
+
+/* ── Selbst gehostete Schrift: Poppins (OFL) — Ersatz der Hausschrift Como ── */
+@font-face {
+  font-family: "Poppins"; font-style: normal; font-weight: 300; font-display: swap;
+  src: url("/fonts/poppins/poppins-300-latin.woff2") format("woff2");
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+2000-206F, U+20AC, U+2122, U+2212, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: "Poppins"; font-style: normal; font-weight: 300; font-display: swap;
+  src: url("/fonts/poppins/poppins-300-latin-ext.woff2") format("woff2");
+  unicode-range: U+0100-02BA, U+1E00-1E9F, U+2020, U+20A0-20AB, U+20AD-20C0;
+}
+@font-face {
+  font-family: "Poppins"; font-style: normal; font-weight: 400; font-display: swap;
+  src: url("/fonts/poppins/poppins-400-latin.woff2") format("woff2");
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+2000-206F, U+20AC, U+2122, U+2212, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: "Poppins"; font-style: normal; font-weight: 400; font-display: swap;
+  src: url("/fonts/poppins/poppins-400-latin-ext.woff2") format("woff2");
+  unicode-range: U+0100-02BA, U+1E00-1E9F, U+2020, U+20A0-20AB, U+20AD-20C0;
+}
+@font-face {
+  font-family: "Poppins"; font-style: normal; font-weight: 500; font-display: swap;
+  src: url("/fonts/poppins/poppins-500-latin.woff2") format("woff2");
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+2000-206F, U+20AC, U+2122, U+2212, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: "Poppins"; font-style: normal; font-weight: 500; font-display: swap;
+  src: url("/fonts/poppins/poppins-500-latin-ext.woff2") format("woff2");
+  unicode-range: U+0100-02BA, U+1E00-1E9F, U+2020, U+20A0-20AB, U+20AD-20C0;
+}
+@font-face {
+  font-family: "Poppins"; font-style: normal; font-weight: 700; font-display: swap;
+  src: url("/fonts/poppins/poppins-700-latin.woff2") format("woff2");
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+2000-206F, U+20AC, U+2122, U+2212, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: "Poppins"; font-style: normal; font-weight: 700; font-display: swap;
+  src: url("/fonts/poppins/poppins-700-latin-ext.woff2") format("woff2");
+  unicode-range: U+0100-02BA, U+1E00-1E9F, U+2020, U+20A0-20AB, U+20AD-20C0;
+}
+
+/* ── Design-Token: HELL = Standard (Papier-Look) ── */
+:root {
+  color-scheme: light;
+
+  /* Markenfarben (Vollton — Rollen, nie dekorativ) */
+  --ml-teal: #156480;
+  --ml-rust: #9c4e36;
+  --ml-gold: #bfb542;
+  --ml-anthracite: #404749;
+  --ml-warmgray: #82796e;
+  --ml-grad-teal: linear-gradient(135deg, #1a7a9c 0%, #156480 48%, #0e4a60 100%);
+  --ml-grad-teal-line: linear-gradient(90deg, #1a7a9c 0%, #156480 48%, #0e4a60 100%);
+
+  /* Flächen & Text (Selektor-Namen wie in der echten App) */
+  --bg: #f9f7f4;
+  --bg-card: #ffffff;
+  --bg-soft: #f9f7f4;
+  --bg-input: #ffffff;
+  --text: #404749;
+  --text-soft: #404749;
+  --muted: #82796e;
+  --border: rgba(130, 121, 110, 0.4);
+  --border-soft: rgba(130, 121, 110, 0.18);
+  --primary: #156480;              /* Alt: Violett -> Teal */
+  --accent: #156480;               /* Alt: Türkis  -> Teal (Rollenfarbe) */
+  --teal-text: #156480;
+  --rust-text: #9c4e36;
+  --heading: #156480;
+  --tint-teal: rgba(21, 100, 128, 0.07);
+  --tint-teal-strong: rgba(21, 100, 128, 0.15);
+  --tint-rust: rgba(156, 78, 54, 0.07);
+  --tint-rust-strong: rgba(156, 78, 54, 0.15);
+  --hover: rgba(21, 100, 128, 0.08);
+  --shadow: 0 4px 14px rgba(64, 71, 73, 0.06);
+  --scrim: rgba(64, 71, 73, 0.45);
+
+  /* Funktionale Signalfarben: Positives ist Teal (Entscheidung 13.07.);
+     Gelb = gestoppt/Warnung, Rot = Fehler (hell = abgedunkelte Stufen) */
+  --warn: #8a6116;
+  --danger: #b3261e;
+  --warn-border: rgba(138, 97, 22, 0.55);
+  --danger-border: rgba(179, 38, 30, 0.55);
+  --warn-tint: rgba(138, 97, 22, 0.07);
+  --danger-tint: rgba(179, 38, 30, 0.07);
+
+  /* Zahlen (Gold): im Hellen dezent wie das Original (keine Aufwertung) */
+  --num-strong: #404749;
+
+  --radius-sm: 3px;
+  --radius-md: 6px;
+  --radius-lg: 10px;
+  --radius-pill: 999px;
+  --ease: cubic-bezier(0.4, 0, 0.2, 1);
+  --ls-label: 0.08em;
+}
+
+/* ── DUNKEL (Leitfaden Kap. 11): Flächen/Balken/Buttons in ECHTEN Markenfarben;
+      farbiger Text nur in der definierten helleren Stufe im identischen Farbton ── */
+:root[data-theme="dark"] {
+  color-scheme: dark;
+
+  --bg: #171d1f;
+  --bg-card: #1e2629;
+  --bg-soft: #171d1f;
+  --bg-input: #171d1f;
+  --text: #eef1f0;
+  --text-soft: #eef1f0;
+  --muted: #a9b2b0;
+  --border: rgba(255, 255, 255, 0.18);
+  --border-soft: rgba(255, 255, 255, 0.1);
+  --teal-text: #4698b9;
+  --rust-text: #c17d67;
+  --heading: #eef1f0;
+  --tint-teal: rgba(21, 100, 128, 0.22);
+  --tint-teal-strong: rgba(21, 100, 128, 0.38);
+  --tint-rust: rgba(156, 78, 54, 0.16);
+  --tint-rust-strong: rgba(156, 78, 54, 0.28);
+  --hover: rgba(21, 100, 128, 0.18);
+  --shadow: 0 4px 14px rgba(0, 0, 0, 0.35);
+  --scrim: rgba(0, 0, 0, 0.55);
+
+  /* Signalfarben: im Dunkeln die Originaltöne (Gelb/Rot) */
+  --warn: #ffb547;
+  --danger: #ef4444;
+  --warn-border: rgba(255, 181, 71, 0.5);
+  --danger-border: rgba(239, 68, 68, 0.5);
+  --warn-tint: rgba(255, 181, 71, 0.09);
+  --danger-tint: rgba(239, 68, 68, 0.09);
+
+  /* Zahlen: Gold-Akzent im Dunkel-Theme (Gold-Text auf Gold-Tint) */
+  --num-strong: #bfb542;
+}
+
+/* ── Basis ── */
+* { box-sizing: border-box; }
+html { -webkit-font-smoothing: antialiased; }
+html, body { margin: 0; padding: 0; overflow-x: hidden; }
+body {
+  background: var(--bg);
+  color: var(--text);
+  font: 16px/1.55 "Poppins", system-ui, -apple-system, "Segoe UI", sans-serif;
+  min-height: 100vh;
+  transition: background-color 0.2s var(--ease), color 0.2s var(--ease);
+}
+
+/* Fokus sichtbar (Teal), Bewegung ruhig */
+:focus-visible { outline: 2px solid var(--ml-teal); outline-offset: 2px; }
+:root[data-theme="dark"] :focus-visible { outline-color: #4698b9; }
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* ── m-Wasserzeichen (Kap. 07): 1× pro Fläche, randbeschnitten, unten rechts ── */
+.brand-watermark {
+  position: fixed;
+  right: -140px;
+  bottom: -150px;
+  width: 560px;
+  z-index: 0;
+  pointer-events: none;
+  user-select: none;
+}
+.brand-watermark img { width: 100%; display: block; }
+.brand-watermark .wm-light { display: block; opacity: 0.05; }
+.brand-watermark .wm-dark { display: none; opacity: 0.08; }
+:root[data-theme="dark"] .brand-watermark .wm-light { display: none; }
+:root[data-theme="dark"] .brand-watermark .wm-dark { display: block; }
+
+/* ── Topbar + Wortmarke (Original-Logo: Aufbau unverändert, exakt umgefärbt) ── */
+.topbar {
+  position: sticky; top: 0; z-index: 20;
+  background: var(--bg);
+  border-bottom: 1px solid var(--border-soft);
+  transition: background-color 0.2s var(--ease);
+}
+.topbar__inner {
+  max-width: 880px; margin: 0 auto; padding: 14px 20px;
+  display: flex; align-items: center; justify-content: space-between; gap: 12px;
+}
+.brand { display: flex; align-items: baseline; gap: 12px; color: var(--text); text-decoration: none; }
+.brand__mark { font-weight: 700; font-size: 1.35rem; letter-spacing: 0.2px; }
+.gradient {
+  background: var(--ml-grad-teal-line);
+  -webkit-background-clip: text; background-clip: text; color: transparent;
+}
+:root[data-theme="dark"] .gradient {
+  background: none; color: #4698b9; /* Kap. 11: farbiger Text nur als helle Teal-Stufe */
+}
+
+/* ── Mond/Sonne-Umschalter (auf jeder Seite; Wahl in localStorage "ml_theme") ── */
+.theme-toggle {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 38px; height: 38px; padding: 0;
+  background: transparent; color: var(--muted);
+  border: 1px solid var(--border); border-radius: var(--radius-pill);
+  cursor: pointer;
+  transition: color 0.15s var(--ease), border-color 0.15s var(--ease), background-color 0.15s var(--ease);
+}
+.theme-toggle:hover { color: var(--teal-text); border-color: var(--ml-teal); background: var(--hover); }
+.theme-toggle svg { width: 18px; height: 18px; display: block; }
+.theme-toggle .icon-sun { display: none; }
+.theme-toggle .icon-moon { display: block; }
+:root[data-theme="dark"] .theme-toggle .icon-sun { display: block; }
+:root[data-theme="dark"] .theme-toggle .icon-moon { display: none; }
+.topbar__actions { display: flex; align-items: center; gap: 12px; }

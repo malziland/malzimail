@@ -9,6 +9,8 @@ export default [
       'coverage/**',
       // *.html bundles full pages (inline styles/markup); not lintable as JS.
       'public/**/*.html',
+      // Offline design prototype (gitignored working folder, not application code).
+      'prototype-malziland/**',
     ],
   },
   js.configs.recommended,

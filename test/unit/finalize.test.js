@@ -1,11 +1,12 @@
-// Regression tests for finalize(): it reads the HTML body to rewrite the footer
-// credit, and MUST always rebuild the response from the read text — otherwise the
-// already-consumed stream is reused downstream and the Worker throws
-// "This ReadableStream is disturbed". This crashed every asset-served page
-// (landing, participant) that lacks the "powered by malzimail" marker.
+// Regression tests for finalize(): security headers on every HTML response and
+// the strict CSP. The former footer-credit rewrite is gone — the attribution
+// "powered by malziland" is fixed in the views on every instance (owner ruling,
+// CI redesign 07/2026) — so finalize must pass bodies through untouched.
 import { env } from 'cloudflare:test';
 import {beforeEach, describe, it, expect} from 'vitest';
 import { finalize } from '../../src/index.js';
+import { THEME_INIT_HASH } from '../../src/lib/http.js';
+import { THEME_INIT_SNIPPET } from '../../src/views/layout.js';
 
 beforeEach(async () => {
   await env.DB.exec('DELETE FROM settings');
@@ -13,30 +14,16 @@ beforeEach(async () => {
 
 const htmlRes = (body) => new Response(body, { headers: { 'content-type': 'text/html; charset=utf-8' } });
 
-describe('finalize() footer rewrite — stream-reuse safety', () => {
-  it('does not crash on an HTML body WITHOUT the footer marker (not configured)', async () => {
-    const res = await finalize(env, htmlRes('<html><body>no footer marker here</body></html>'), '/');
+describe('finalize() — body passthrough + caching', () => {
+  it('leaves the HTML body untouched (credit is fixed in the views, no rewrite)', async () => {
+    const res = await finalize(env, htmlRes('<div>powered by malziland</div><p>Inhalt</p>'), '/impressum');
     expect(res.status).toBe(200);
-    expect(await res.text()).toContain('no footer marker here'); // body still readable
+    expect(await res.text()).toBe('<div>powered by malziland</div><p>Inhalt</p>');
   });
 
   it('sets no-store on HTML so browsers cannot serve a stale app shell', async () => {
     const res = await finalize(env, htmlRes('<html>x</html>'), '/');
     expect(res.headers.get('cache-control')).toContain('no-store');
-  });
-
-  it('rewrites "powered by malziMAIL" -> "malziland" when not configured', async () => {
-    const res = await finalize(env, htmlRes('<div>powered by malziMAIL</div>'), '/impressum');
-    expect(await res.text()).toContain('powered by malziland');
-  });
-
-  it('leaves the credit neutral when an operator IS configured', async () => {
-    await env.DB.prepare('INSERT INTO settings (key, value, updated_at) VALUES (?, ?, 0)')
-      .bind('operator_owner', 'Maria Muster').run();
-    const res = await finalize(env, htmlRes('<div>powered by malziMAIL</div>'), '/impressum');
-    const html = await res.text();
-    expect(html).toContain('powered by malziMAIL');
-    expect(html).not.toContain('powered by malziland');
   });
 
   it('passes non-HTML responses straight through (no body read)', async () => {
@@ -45,17 +32,22 @@ describe('finalize() footer rewrite — stream-reuse safety', () => {
     expect(res.headers.get('cache-control')).toContain('no-store'); // stale inbox guard
     expect(await res.json()).toEqual({ ok: true });
   });
-
 });
 
 describe('Content-Security-Policy — script hardening', () => {
   const csp = async () => (await finalize(env, htmlRes('<html>x</html>'), '/')).headers.get('content-security-policy');
 
-  it('has NO unsafe-inline anywhere — all JS and CSS are externalized', async () => {
+  it('has NO unsafe-inline anywhere — only the hash-pinned theme-init snippet may run inline', async () => {
     const p = await csp();
-    expect(p).toContain("script-src 'self';");
+    expect(p).toContain(`script-src 'self' '${THEME_INIT_HASH}';`);
     expect(p).toContain("style-src 'self';");
     expect(p).not.toContain("'unsafe-inline'");
+  });
+
+  it('theme-init snippet and CSP hash stay in sync (byte-exact)', async () => {
+    const digest = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(THEME_INIT_SNIPPET));
+    const b64 = btoa(String.fromCharCode(...new Uint8Array(digest)));
+    expect('sha256-' + b64).toBe(THEME_INIT_HASH);
   });
 
   it('keeps the other lock-down directives (object-src none, frame-ancestors none)', async () => {

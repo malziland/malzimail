@@ -26,6 +26,9 @@ docs/roadmap.md
 coverage/
 .vitest/
 
+# CI redesign: offline prototype (never committed)
+prototype-malziland/
+
 # Local editor/tooling
 .claude/
 .idea/

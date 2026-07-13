@@ -118,8 +118,12 @@ describe('first-run setup assistant (fresh instance, no password)', () => {
     expect(imp).toContain('Inhaber: Maria Muster');
     expect(imp).toContain('4020 Linz');
     expect(imp).not.toContain('33320410');
-    expect(imp).not.toContain('malziland');
-    expect(imp).toContain('powered by malziMAIL');
+    // De-personalized = no FOREIGN operator data (name/address/registry). The maker
+    // credit "powered by malziland" is deliberately fixed on EVERY instance
+    // (owner ruling, CI redesign 07/2026) and therefore expected here.
+    expect(imp).not.toContain('Christoph Krieger');
+    expect(imp).not.toContain('Tassilostraße');
+    expect(imp).toContain('powered by malziland');
     const agb = await call('/nutzungsbedingungen').then(r => r.text());
     expect(agb).toContain('workshopmail');
     expect(agb).not.toContain('ATU76410108');
@@ -134,7 +138,7 @@ describe('live-instance safety (legacy COCKPIT_PASSWORD present)', () => {
     expect(html).toContain('Anmelden');
   });
 
-  it('footer reads "powered by malziland" when no operator is configured', async () => {
+  it('footer credit is the fixed "powered by malziland" (never the service name)', async () => {
     const imp = await call('/impressum').then(r => r.text());
     expect(imp).toContain('powered by malziland');
     expect(imp).not.toContain('powered by malziMAIL');

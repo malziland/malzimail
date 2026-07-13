@@ -4,9 +4,13 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="robots" content="noindex,nofollow,noarchive,nosnippet">
-<meta name="theme-color" content="#6C5CE7">
+<meta name="theme-color" content="#f9f7f4">
 <title>malziMAIL – Temporäre Mail für Workshops</title>
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="icon" href="/favicon.ico" sizes="32x32">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <link rel="stylesheet" href="/landing.css">
+<script>(function(){try{if(localStorage.getItem('ml_theme')==='dark')document.documentElement.setAttribute('data-theme','dark');}catch(e){}})();</script>
 </head>
 <body>
 
@@ -15,6 +19,12 @@
     <a class="brand" href="/">
       <span class="brand__mark">malzi<span class="gradient">MAIL</span></span>
     </a>
+    <div class="topbar__actions">
+      <button class="theme-toggle" type="button" data-action="toggle-theme" aria-label="Farbschema wechseln" title="Hell/Dunkel umschalten">
+        <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+        <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"></circle><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"></path></svg>
+      </button>
+    </div>
   </div>
 </header>
 
@@ -49,7 +59,7 @@
   <section class="preview">
     <div class="preview__inner">
       <div class="demo-card demo-card--accent">
-        <div class="demo-head--accent">★ Mit Google anmelden</div>
+        <div class="demo-head--accent"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l2.9 5.9 6.5.9-4.7 4.6 1.1 6.5-5.8-3-5.8 3 1.1-6.5L2.6 9.8l6.5-.9z"></path></svg> Mit Google anmelden</div>
         <div class="demo-label">E-Mail-Adresse <span class="demo-sub">(zugleich der Login)</span></div>
         <div class="demo-value">fuchs2407@malzimail.at</div>
         <div class="demo-label demo-label--mt">Passwort</div>
@@ -78,13 +88,17 @@
 
 </main>
 
+<div class="brand-watermark" aria-hidden="true">
+  <img class="wm-light" src="/img/brand/malziland-m-petrol.png" alt="">
+  <img class="wm-dark" src="/img/brand/malziland-m-white.png" alt="">
+</div>
+
 <footer class="footer">
   <div class="footer__inner">
     <span>&copy; 2026 malziMAIL</span>
     <span class="footer__sep">·</span>
     <span>powered by malziland</span>
-  </div>
-  <div class="footer__inner footer__inner--mt6">
+    <span class="footer__sep">·</span>
     <a href="/impressum">Impressum</a>
     <span class="footer__sep">·</span>
     <a href="/datenschutz">Datenschutz</a>
@@ -93,5 +107,6 @@
   </div>
 </footer>
 
+<script src="/theme.js"></script>
 </body>
 </html>

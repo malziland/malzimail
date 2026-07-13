@@ -184,7 +184,7 @@ export function renderSetupGoogle({ values = {}, error } = {}) {
       <p class="muted field-hint">Die JSON-Schlüsseldatei, die du bei Google heruntergeladen hast (Dateiname endet auf <code>.json</code>). <strong>Zwei Wege:</strong> die Datei in das Feld unten ziehen <em>oder</em> das Feld anklicken und sie auswählen — alternativ den JSON-Inhalt ganz unten als Text einfügen. Der Schlüssel wird verschlüsselt gespeichert.</p>
       <label id="sa-drop" for="sa-file" class="drop-zone">
         <input type="file" id="sa-file" accept="application/json,.json" class="drop-zone__input">
-        <span class="drop-zone__icon" aria-hidden="true">⬆</span>
+        <span class="drop-zone__icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 17V3"></path><path d="m6 9 6-6 6 6"></path><path d="M4 21h16"></path></svg></span>
         <span id="sa-drop-text" class="drop-zone__text">JSON-Datei hierher ziehen oder klicken zum Auswählen</span>
       </label>
       <label class="field-label--muted drop-or">… oder den JSON-Text direkt einfügen:</label>
@@ -225,11 +225,12 @@ export function renderWorkshopDashboard({ workshop, serviceName, googleActive, g
   const active = !!(workshop && workshop.enabled && workshop.active_until > now);
 
   // Status box — no countdown (the workshop runs until it is stopped).
+  // Stroke icons instead of glyphs (CI: no emoji as design element); text unchanged.
   const statusBox = active
     ? `<div class="card statusbox is-ok">
-        <p class="statusbox__title">✓ Workshop läuft</p></div>`
+        <p class="statusbox__title"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"></path></svg> Workshop läuft</p></div>`
     : `<div class="card statusbox is-idle">
-        <p class="statusbox__title">⏸ Kein Workshop aktiv <span class="statusbox__note">· starte einen, um einen Teilnehmer-Link zu erhalten</span></p></div>`;
+        <p class="statusbox__title"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M10 5v14"></path><path d="M14 5v14"></path></svg> Kein Workshop aktiv <span class="statusbox__note">· starte einen, um einen Teilnehmer-Link zu erhalten</span></p></div>`;
 
   // Compact Google-accounts counter (replaces the old stats line) — only when Google
   // is configured. The polling script (admin.js) keeps it live as participants join.
@@ -250,7 +251,7 @@ export function renderWorkshopDashboard({ workshop, serviceName, googleActive, g
     <div class="card mb-14">
       <div class="ws-head mb-14">
         <h2 class="h2">Workshop</h2>
-        <button type="button" data-action="open-modal" data-target="stopModal" class="ws-btn ws-btn--stop">⏹ Workshop stoppen</button>
+        <button type="button" data-action="open-modal" data-target="stopModal" class="ws-btn ws-btn--stop"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" aria-hidden="true"><rect x="6" y="6" width="12" height="12" rx="1"></rect></svg> Workshop stoppen</button>
       </div>
       <div class="ws-linksec">
         <p class="muted label-sm">Teilnehmer-Link</p>
@@ -266,7 +267,7 @@ export function renderWorkshopDashboard({ workshop, serviceName, googleActive, g
     <div id="stopModal" class="modal-overlay">
       <div class="modal-card modal-card--sm">
         <div class="modal-warnhead">
-          <span class="emoji-lg">⚠️</span>
+          <span class="emoji-lg"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"></path><path d="M12 9v4"></path><path d="M12 17h.01"></path></svg></span>
           <h2 class="modal-title--warn">Workshop stoppen?</h2>
         </div>
         <p class="modal-text">Der Workshop wird beendet: <strong>alle Google-Konten werden gelöscht</strong>, alle Teilnehmer-Sitzungen zurückgesetzt (Postfächer geleert) und der <strong>Teilnehmer-Link wird ungültig</strong>. Lässt sich nicht rückgängig machen.</p>
@@ -297,7 +298,7 @@ export function renderWorkshopDashboard({ workshop, serviceName, googleActive, g
         </div>
         <form method="POST" action="/admin" class="inline-form">
           <input type="hidden" name="action" value="activate">
-          <button type="submit" class="ws-btn ws-btn--start">▶ Workshop starten</button>
+          <button type="submit" class="ws-btn ws-btn--start"><svg viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="2" stroke-linejoin="round" aria-hidden="true"><path d="m7 5 12 7-12 7V5z"></path></svg> Workshop starten</button>
         </form>
       </div>
       ${googleCounter}
