@@ -134,3 +134,20 @@ Anleitungs-Lücken, die dem Entwickler am eigenen Rechner nie auffallen.
 | Google-Zugangsdaten | Admin → „Verbindung testen" | Schlüssel/Subject/Domain gültig (kein Konto) |
 | Google anlegen+löschen | `node scripts/test-google-module.mjs` | Worker-Krypto + Admin-SDK end-to-end |
 | Google nutzbar | Teilnehmer-Login bei Gemini/NotebookLM | Konto real, aktiv, verknüpft |
+
+## Manueller Tastatur-Smoketest (Barrierefreiheit)
+
+Der automatische Check (`npm run test:a11y`, axe-core) prüft die Seitenstruktur;
+Bedienbarkeit per Tastatur muss ein Mensch prüfen. Vor jedem Release einmal
+**ohne Maus** durchspielen (Tab / Shift+Tab / Enter / Esc):
+
+1. Teilnehmerseite (`/?t=…`): mit Tab durch alle Bedienelemente — der
+   **Fokus-Rahmen muss immer sichtbar** sein; „Adresse erzeugen" und die
+   Kopier-Buttons per Enter auslösbar; eine Mail in der Liste per Tastatur
+   öffnen und wieder schließen.
+2. Admin (`/admin`): Anmelden nur per Tastatur; „Workshop starten/stoppen"
+   erreichen; das Stopp-Modal mit Esc bzw. über den Abbrechen-Knopf verlassen
+   (Fokus darf nicht im Modal „gefangen" bleiben, wenn es geschlossen ist).
+3. Beide Themes (hell/dunkel) stichprobenartig: Fokus-Rahmen bleibt erkennbar.
+
+„Grün" = alle drei Punkte ohne Griff zur Maus möglich.

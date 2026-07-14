@@ -32,6 +32,14 @@ export default [
     },
   },
   {
+    // Accessibility tests run in jsdom (vitest.a11y.config.js) — browser
+    // globals like `document` are provided by the test environment.
+    files: ['test/a11y/**/*.js'],
+    languageOptions: {
+      globals: { ...globals.browser },
+    },
+  },
+  {
     // Externalized browser scripts (public/app.js, public/admin.js) — classic
     // scripts in the browser, so browser globals + non-module source.
     files: ['public/**/*.js'],

@@ -31,6 +31,11 @@ jobs:
       - name: Tests + Coverage (≥80% Gate)
         run: npm run test:coverage
 
+      # Structural accessibility rules (axe-core in jsdom); the color-contrast
+      # rule needs real rendering and is covered by the design tokens instead.
+      - name: Accessibility checks (axe-core)
+        run: npm run test:a11y
+
       # Scan the dependencies that actually ship in the Worker. Build/test tools
       # (esbuild, wrangler, vitest) are kept current via Dependabot instead, so
       # a dev-tool advisory does not block the pipeline.

@@ -15,16 +15,19 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "test:coverage": "vitest run --coverage",
+    "test:a11y": "vitest run --config vitest.a11y.config.js",
     "lint": "eslint .",
-    "check": "npm run lint && npm test",
+    "check": "npm run lint && npm test && npm run test:a11y",
     "setup": "node scripts/setup.mjs"
   },
   "devDependencies": {
     "@cloudflare/vitest-pool-workers": "^0.16.15",
     "@eslint/js": "^10.0.1",
     "@vitest/coverage-istanbul": "^4.1.8",
+    "axe-core": "^4.12.1",
     "eslint": "^10.5.0",
     "globals": "^17.6.0",
+    "jsdom": "^29.1.1",
     "vitest": "^4.1.8",
     "wrangler": "^4.0.0"
   },
