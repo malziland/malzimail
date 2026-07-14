@@ -7,13 +7,22 @@ on:
     branches: [main]
   pull_request:
 
+# Least privilege: jobs only read the checkout. gitleaks needs the token to
+# read PR metadata (see below) but no write scope. Pinning this in the workflow
+# means it no longer depends on the repository's default-permissions setting.
+permissions:
+  contents: read
+
 jobs:
   check:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v6
+      # Third-party and first-party actions pinned to immutable commit SHAs
+      # (mutable major tags can be re-pointed). Dependabot keeps the SHAs current
+      # and the trailing comment records the human-readable version.
+      - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6
 
-      - uses: actions/setup-node@v6
+      - uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6
         with:
           node-version-file: .nvmrc
           cache: npm
@@ -28,7 +37,8 @@ jobs:
       - name: Lint
         run: npm run lint
 
-      - name: Tests + Coverage (≥80% Gate)
+      # Real gate (vitest.config.js): lines/statements/functions >= 90, branches >= 80.
+      - name: Tests + Coverage (Gate 90/90/90/80)
         run: npm run test:coverage
 
       # Structural accessibility rules (axe-core in jsdom); the color-contrast
@@ -47,8 +57,13 @@ jobs:
   secret-scan:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6
         with:
           fetch-depth: 0
       - name: Secret scan (gitleaks)
-        uses: gitleaks/gitleaks-action@v3
+        uses: gitleaks/gitleaks-action@e0c47f4f8be36e29cdc102c57e68cb5cbf0e8d1e # v3
+        env:
+          # Required since gitleaks-action v3 for scanning pull requests (reads PR
+          # metadata). The automatic token is read-only here (permissions above);
+          # without it the job fails on every PR — which blocked all Dependabot PRs.
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

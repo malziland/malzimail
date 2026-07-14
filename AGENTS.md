@@ -11,7 +11,7 @@ commits are English (Conventional Commits).
 npm run setup             # one-time local setup assistant
 npm run lint              # ESLint (flat config)
 npm test                  # Vitest in real workerd runtime (vitest-pool-workers)
-npm run test:coverage     # tests + coverage gate (CI enforces >= 80%)
+npm run test:coverage     # tests + coverage gate (lines/statements/functions >=90, branches >=80)
 npm run test:a11y         # accessibility checks (axe-core, jsdom)
 npm run check             # lint + tests — must be green before any deploy
 npm run deploy:dev        # deploy to the test instance (ALWAYS first)

@@ -15,7 +15,7 @@ gilt eine CSP ohne `unsafe-inline`, Mail-Anzeige über eine eigene iframe-Route)
 | Mail-Inhalte in D1 | können PII und Zugangsdaten enthalten (absenderbestimmt) |
 | `MAIL_ENCRYPTION_KEY` | Master-Schlüssel; entschlüsselt Mails + Google-Schlüssel |
 | Google-Service-Account-Schlüssel | erlaubt Konto-Anlage/-Löschung im Google-Tenant |
-| Admin-Zugang (Passwort-Hash, Session-Cookie) | volle Kontrolle über die Instanz |
+| Admin-Zugang (Passwort-Hash, Session-Cookie; optional `ADMIN_KEY`) | volle Kontrolle über die Instanz. `ADMIN_KEY` ist ein optionales zweites Admin-Credential (nur aktiv, wenn gesetzt) — bei Leak-Verdacht mit-rotieren, siehe [RUNBOOK.md](RUNBOOK.md) |
 | Teilnehmer-Link (Workshop-Token) | einziges Tor zur Adress-/Konto-Anlage |
 | Wegwerf-Google-Konten (Login = Passwort) | bewusst schwach — nur so lange gültig wie die Adresse |
 
@@ -25,7 +25,7 @@ gilt eine CSP ohne `unsafe-inline`, Mail-Anzeige über eine eigene iframe-Route)
 |---|---|
 | Mail-Absender (Internet) | **nicht vertrauenswürdig** — Inhalte sind Angriffsfläche (XSS) |
 | Anonymer Besucher | nicht vertrauenswürdig; sieht nur Startseite + Rechtsseiten |
-| Teilnehmer:in (mit Workshop-Link) | begrenzt vertraut: darf Adressen anlegen und **nur eigene** Postfächer lesen (Token-Bindung) |
+| Teilnehmer:in (mit Workshop-Link) | begrenzt vertraut: Teilnehmende eines Workshops bilden eine semi-vertraute Gruppe (gemeinsamer Link). Die Isolation **zwischen** Teilnehmenden desselben Workshops wird intern nachgeschärft |
 | Betreiber:in / Admin (Passwort) | voll vertraut; kann per Design alles entschlüsseln (kein Zero-Knowledge möglich, da der Worker Google ansprechen muss) |
 | Cloudflare (Hosting, DNS, Mail-Routing, D1) | Infrastruktur-Anbieter / Auftragsverarbeiter |
 | Google (Cloud Identity, Admin SDK) | externer Dienst; API-Antworten gelten als nicht vertrauenswürdige Eingabe |
@@ -43,8 +43,8 @@ gilt eine CSP ohne `unsafe-inline`, Mail-Anzeige über eine eigene iframe-Route)
 |---|---|
 | Bösartige Mail schleust Skript ein (XSS) | Mail-HTML nur im iframe mit eigener CSP (`default-src 'none'`, Skripte blockiert, `sandbox`); Metadaten via `textContent`/`escape()` |
 | SQL-Injection | ausschließlich gebundene Parameter (`.bind()`), einzige SQL-Stelle `src/db/queries.js` |
-| Admin-Passwort raten | PBKDF2-HMAC-SHA256 (600k Iterationen), Login-Drosselung pro IP, konstante-Zeit-Vergleich |
-| CSRF auf Admin-Aktionen | Cookie `HttpOnly; Secure; SameSite=Strict` + Origin/Referer-Prüfung auf allen Admin-POSTs |
+| Admin-Passwort raten | PBKDF2-HMAC-SHA256 (**100.000 Iterationen** — Cloudflare-Edge-Kappe; höhere Werte werfen live, `src/lib/passwords.js`), Login-Drosselung pro IP (nur Passwort-POST), konstante-Zeit-Vergleich |
+| CSRF auf Admin-Aktionen | Cookie `HttpOnly; Secure; **SameSite=Lax**` (seit v1.0.1, für Mobile-Login; Cross-Site-POSTs senden das Cookie trotzdem nicht) + Origin/Referer-Prüfung auf allen Admin-POSTs |
 | DB-Leak | Mail-Inhalte + Google-Schlüssel at rest AES-256-GCM (HKDF-Domänentrennung); Master-Secret nur als Worker-Secret |
 | Geleakter Teilnehmer-Link | rotierender, schwer erratbarer Link je „Start“; „Stopp“ macht ihn sofort tot und wischt alles; Konto-Anlage endet am Google-Limit. Bewusster Trade-off: kein Rate-Limit auf `/api/address` (dokumentiertes Rest-Risiko) |
 | Secret im Repo | gitleaks in CI (volle Historie); Beispiel-Konfig nur mit Platzhaltern; Vorgehen bei Leak: rotieren vor bereinigen ([RUNBOOK.md](RUNBOOK.md)) |
@@ -56,8 +56,10 @@ gilt eine CSP ohne `unsafe-inline`, Mail-Anzeige über eine eigene iframe-Route)
   Bestandskonten, Profile oder Tracking-Daten geführt.
 - **Fristen:** Mail-Inhalte und Google-Konten leben maximal `ttlHours`
   (Standard **48 h**); Cron räumt alle 6 h auf. „Workshop stoppen“ löscht
-  sofort alles. Adress-Einträge bleiben (ohne Inhalte) für globale
-  Eindeutigkeit erhalten.
+  aktive Postfächer sofort; bereits abgelaufene Reste sowie im Fehlerfall
+  verbliebene Google-Konten holt spätestens der nächste Cron-Lauf (≤ 6 h)
+  nach. Adress-Einträge bleiben (ohne Inhalte) für globale Eindeutigkeit
+  erhalten.
 - **Empfänger/Auftragsverarbeitung:** Cloudflare (Hosting/Mail/DB), Google
   (nur Wegwerf-Konten). Rechtstexte der Instanz werden aus den
   Betreiber-Settings erzeugt; die rechtliche Gesamtbewertung liegt bei der
@@ -69,3 +71,12 @@ gilt eine CSP ohne `unsafe-inline`, Mail-Anzeige über eine eigene iframe-Route)
 |---|---|---|---|
 | Kein Rate-Limit auf `/api/address` | Tor ist der rotierende geheime Link; Limits wurden bewusst entfernt (Betreiber-Verantwortung) | Betreiber:in | beim nächsten LANGAUDIT |
 | Betreiber kann entschlüsseln | systembedingt (Worker muss Google ansprechen); schützt trotzdem gegen DB-Leaks | Betreiber:in | dauerhaft akzeptiert |
+
+## Offene Befunde
+
+Offene, noch nicht behobene Sicherheits-/Zuverlässigkeitsbefunde werden **nicht
+öffentlich** geführt (kein Ausnutzungs-Fahrplan für einen laufenden Dienst). Sie
+liegen in einer internen, gitignorierten Notiz (`docs/security-private/`) und
+werden über dev-getestete Änderungen behoben; danach dürfen sie als sanitisierte
+Zusammenfassung öffentlich werden. Schwachstellen bitte vertraulich melden —
+siehe [SECURITY.md](../SECURITY.md).

@@ -22,6 +22,10 @@ CLAUDE.md
 # Roadmap / Zukunftsideen — interne Planung, nicht öffentlich
 docs/roadmap.md
 
+# Interne Sicherheits-Audits mit noch OFFENEN, ausnutzbaren Befunden — NIE öffentlich
+# (behobene Befunde dürfen später als sanitisierte Zusammenfassung publik werden)
+docs/security-private/
+
 # Test & build artifacts
 coverage/
 .vitest/

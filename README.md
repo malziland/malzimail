@@ -1,7 +1,7 @@
 # malziMAIL
 
 [![CI](https://github.com/malziland/malzimail/actions/workflows/ci.yml/badge.svg)](https://github.com/malziland/malzimail/actions/workflows/ci.yml)
-[![Coverage](https://img.shields.io/badge/coverage-%E2%89%A590%25-brightgreen.svg)](docs/oss-projekt-charta.md)
+[![Coverage](https://img.shields.io/badge/coverage-lines%20%E2%89%A590%25%20%C2%B7%20branches%20%E2%89%A580%25-brightgreen.svg)](docs/VERIFICATION.md)
 [![Lizenz: MIT](https://img.shields.io/badge/Lizenz-MIT-blue.svg)](LICENSE)
 
 **Privater Wegwerf-Mail-Dienst für Workshops** — jede temporäre Adresse ist zugleich ein Wegwerf-Google-Login für Gemini & NotebookLM. Läuft komplett auf Cloudflare (Workers + D1 + Email Routing); laufende Kosten: nur die eigene Domain.

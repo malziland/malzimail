@@ -1,5 +1,14 @@
 # Sicherheits-Selbst-Audit — 2026-06-14 (Phase 5e)
 
+> **⚠️ ÜBERHOLT (Stand 14.07.2026).** Historisches Dokument, nicht mehr der Ist-Stand.
+> Vier Aussagen hier stimmen nicht mehr mit dem Code überein:
+> (1) Mail-Anzeige nutzt **kein** `<iframe srcdoc>` mehr, sondern eine eigene
+> iframe-Route mit eigener CSP; (2) die CSP hat **kein** `script-src 'unsafe-inline'`
+> mehr (nur ein Theme-Init-Snippet per SHA-256-Hash); (3) das Admin-Cookie ist seit
+> v1.0.1 `SameSite=Lax`, nicht `Strict`; (4) die PBKDF2-Iterationen sind **100.000**
+> (Cloudflare-Edge-Kappe), **nicht** 600.000 — der Umstieg auf 600k warf live einen
+> Fehler und wurde zurückgenommen. Aktueller Stand: [SECURITY-MODEL.md](SECURITY-MODEL.md).
+
 Selbstprüfung des Codes (Schwerpunkt: Umbau auf rotierende Links + Krypto-Härtung). **Ersetzt nicht** den formalen Audit von Christoph, dient ihm als Baseline.
 
 ## Geprüft & in Ordnung
