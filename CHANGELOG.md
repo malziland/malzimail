@@ -3,7 +3,7 @@
 Alle nennenswerten Änderungen an diesem Projekt werden hier dokumentiert.
 Format angelehnt an [Keep a Changelog](https://keepachangelog.com/de/1.1.0/); Versionierung nach [SemVer](https://semver.org/lang/de/).
 
-## [Unveröffentlicht]
+## [1.1.1] – 2026-07-14
 
 ### Hinzugefügt
 - **Enterprise-Doku-Fundament** (Angleichung an die Prompt-Familie PROJEKTSTART/CHANGE DELIVERY/KURZAUDIT/LANGAUDIT): `AGENTS.md` (Arbeitsregeln für KI-Assistenten), `docs/RUNBOOK.md` (Deploy/Rollback/Notfall — Rollback auf `v1.0.1` real geprobt), `docs/SECURITY-MODEL.md` (Sicherheits- und Datenskizze), `docs/FLAGS.md` (Schalter-Register), `docs/VERIFICATION.md` (Nachweis-Matrix), `docs/adr/ADR-0001` (Grundsatzentscheidungen rückwirkend dokumentiert).
@@ -13,6 +13,12 @@ Format angelehnt an [Keep a Changelog](https://keepachangelog.com/de/1.1.0/); Ve
 
 ### Behoben
 - Coverage-Messung stolpert nicht mehr über Nicht-Code-Dateien in `src/` (z. B. macOS `.DS_Store`): Instrumentierung auf `src/**/*.js` begrenzt.
+- **CI-Secret-Scan lief auf jedem Pull-Request rot** (gitleaks-action v3 verlangt seit einem Breaking Change ein `GITHUB_TOKEN`) — dadurch blieben alle Dependabot-Update-PRs hängen. Token ergänzt, minimale `permissions: contents: read` gesetzt, GitHub-Actions zusätzlich auf unveränderliche Commit-SHAs gepinnt.
+
+### Sicherheit / Doku (Audit 2026-07-14)
+- Vollständiger Release-Audit als [docs/audit-2026-07-14.md](docs/audit-2026-07-14.md).
+- Doku-Korrekturen: SECURITY-MODEL nannte PBKDF2 600k statt real 100k und Cookie `SameSite=Strict` statt real `Lax`; das alte Selbst-Audit hat jetzt einen Überholt-Hinweis; Coverage-Schwellen einheitlich (90/90/90/80); `ADMIN_KEY` und `ADMIN_TRAINER_TOKEN` ins Secret-/Flag-Register aufgenommen.
+- **Bekannte, noch offene Laufzeit-Befunde** (Fix folgt als separate, auf der Test-Instanz erprobte Änderung — dieser Patch berührt keinen Worker-Code) sind in [docs/SECURITY-MODEL.md](docs/SECURITY-MODEL.md) unter „Offene Befunde“ dokumentiert.
 
 ## [1.1.0] – 2026-07-13
 
