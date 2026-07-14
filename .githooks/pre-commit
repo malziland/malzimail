@@ -1,0 +1,7 @@
+#!/bin/sh
+# Optional local pre-commit hook: fast lint before every commit.
+# Enable once per clone:  git config core.hooksPath .githooks
+# This is developer ergonomics only — the binding quality gate is CI
+# (lint, tests, coverage, npm audit, gitleaks secret scan).
+set -e
+npm run lint
