@@ -16,7 +16,7 @@ beforeAll(async () => {
   );
   const pkcs8 = new Uint8Array(await crypto.subtle.exportKey('pkcs8', kp.privateKey));
   let bin = ''; for (let i = 0; i < pkcs8.length; i++) bin += String.fromCharCode(pkcs8[i]);
-  const pem = '-----BEGIN PRIVATE KEY-----\n' + btoa(bin).match(/.{1,64}/g).join('\n') + '\n-----END PRIVATE KEY-----\n';
+  const pem = '-----BEGIN PRIVATE KEY-----\n' + btoa(bin).match(/.{1,64}/g).join('\n') + '\n-----END PRIVATE KEY-----\n'; // gitleaks:allow — RSA key generated at runtime, not a real secret
   SA_KEY = JSON.stringify({ client_email: 'robot@x.iam.gserviceaccount.com', private_key: pem });
 });
 beforeEach(async () => {
@@ -25,6 +25,68 @@ beforeEach(async () => {
 afterEach(() => vi.unstubAllGlobals());
 
 const GENV = () => ({ ...env, MAIL_ENCRYPTION_KEY: 'k', GOOGLE_SA_KEY: SA_KEY, GOOGLE_ADMIN_SUBJECT: 'admin@x.at', GOOGLE_ACCOUNT_DOMAIN: 'x.at' });
+
+// Drive the real admin "stop" action end-to-end (login -> POST action=stop).
+async function adminStop(envObj) {
+  const login = new Request('https://example.test/admin', {
+    method: 'POST',
+    headers: { 'content-type': 'application/x-www-form-urlencoded' },
+    body: 'password=live-secret',
+  });
+  const c1 = createExecutionContext();
+  const lr = await worker.fetch(login, envObj, c1);
+  await waitOnExecutionContext(c1);
+  const cookie = (lr.headers.get('set-cookie') || '').split(';')[0];
+  const stop = new Request('https://example.test/admin', {
+    method: 'POST',
+    headers: { 'content-type': 'application/x-www-form-urlencoded', cookie },
+    body: 'action=stop',
+  });
+  const c2 = createExecutionContext();
+  const sr = await worker.fetch(stop, envObj, c2);
+  await waitOnExecutionContext(c2);
+  return sr;
+}
+
+async function seedWorkshopWithGoogleAddress() {
+  const now = Date.now();
+  await env.DB.prepare('INSERT INTO trainers (token, name, secret_hash, active_until, enabled, created_at, google_enabled) VALUES (?, ?, 0, ?, 1, 0, 1)')
+    .bind('kurs', 'Kurs', now + HOUR).run();
+  await env.DB.prepare("INSERT INTO addresses (address, created_at, expires_at, trainer_token, google_login) VALUES ('a@x.at', 0, ?, 'kurs', 'a@x.at')").bind(now + HOUR).run();
+}
+
+describe('#2 admin "stop" action, end-to-end', () => {
+  it('reports success and deactivates the workshop when Google is reachable', async () => {
+    await seedWorkshopWithGoogleAddress();
+    vi.stubGlobal('fetch', vi.fn(async (url, opts = {}) => {
+      if (String(url).includes('oauth2.googleapis.com/token')) return new Response(JSON.stringify({ access_token: 'tok' }), { status: 200 });
+      if (opts.method === 'DELETE') return new Response(null, { status: 204 });
+      return new Response('{}', { status: 200 });
+    }));
+    const res = await adminStop({ ...GENV(), COCKPIT_PASSWORD: 'live-secret' });
+    const j = await res.json();
+    expect(j.ok).toBe(true);
+    expect(j.googleError).toBe(false);
+    expect(j.deleted).toBe(1);
+    const t = await env.DB.prepare("SELECT active_until FROM trainers WHERE token='kurs'").first();
+    expect(t.active_until).toBe(0); // link killed
+  });
+
+  it('still stops (and says so) when Google is unreachable', async () => {
+    await seedWorkshopWithGoogleAddress();
+    vi.stubGlobal('fetch', vi.fn(async (url) =>
+      String(url).includes('oauth2.googleapis.com/token')
+        ? new Response('err', { status: 500 })
+        : new Response('{}', { status: 200 })));
+    const res = await adminStop({ ...GENV(), COCKPIT_PASSWORD: 'live-secret' });
+    const j = await res.json();
+    expect(j.ok).toBe(true);
+    expect(j.googleError).toBe(true);
+    expect(j.message).toMatch(/Google war nicht erreichbar/);
+    const t = await env.DB.prepare("SELECT active_until FROM trainers WHERE token='kurs'").first();
+    expect(t.active_until).toBe(0); // link still killed despite the Google outage
+  });
+});
 
 describe('#2 stop/wipe is local-first and survives a Google outage', () => {
   it('empties mailboxes + retires addresses even when the Google token cannot be fetched', async () => {
@@ -47,6 +109,21 @@ describe('#2 stop/wipe is local-first and survives a Google outage', () => {
     const addr = await env.DB.prepare("SELECT expires_at, google_login FROM addresses WHERE address='a@x.at'").first();
     expect(addr.expires_at).toBe(0);                // address retired -> link dead
     expect(addr.google_login).toBe('a@x.at');       // login kept so the cron retries the Google delete
+  });
+
+  it('counts an account as failed (kept for retry) when Google rejects the delete', async () => {
+    const now = Date.now();
+    await env.DB.prepare("INSERT INTO addresses (address, created_at, expires_at, trainer_token, google_login) VALUES ('b@x.at', 0, ?, 'kurs', 'b@x.at')").bind(now + HOUR).run();
+    vi.stubGlobal('fetch', vi.fn(async (url, opts = {}) => {
+      if (String(url).includes('oauth2.googleapis.com/token')) return new Response(JSON.stringify({ access_token: 'tok' }), { status: 200 });
+      if (opts.method === 'DELETE') return new Response('nope', { status: 500 }); // rejected, not thrown
+      return new Response('{}', { status: 200 });
+    }));
+    const res = await wipeAllSessions(GENV());
+    expect(res.googleError).toBe(false); // no exception -> not an outage
+    expect(res.failed).toBe(1);          // but the delete was not confirmed
+    const addr = await env.DB.prepare("SELECT google_login FROM addresses WHERE address='b@x.at'").first();
+    expect(addr.google_login).toBe('b@x.at'); // kept so the cron retries
   });
 });
 
