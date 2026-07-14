@@ -5,9 +5,9 @@ und das tatsächlich vorliegende Ergebnis (kein Datum ohne Beleg). Bei jeder
 Änderung, die einen Nachweis ungültig macht, wird die betroffene Zeile im
 selben Change aktualisiert.
 
-**Stand:** 14.07.2026 · Basis-Commit `70a42e8` (main) + Arbeitsstand
-„OSS-Standard-Artefakte“ (lokal ausgeführt, macOS/Node laut `.nvmrc`;
-CI wiederholt die Läufe bei jedem Push auf Linux).
+**Stand:** 14.07.2026 · Commit `606c03e` (main). Lokale Läufe auf diesem
+Stand (macOS/Node laut `.nvmrc`); von der CI auf Linux bestätigt:
+Run **29313056451** (success, 14.07.2026).
 
 | Anforderung | Evidenz | Befehl / CI-Job | Ergebnis |
 |---|---|---|---|
@@ -16,7 +16,7 @@ CI wiederholt die Läufe bei jedem Push auf Linux).
 | Coverage-Gate | istanbul, Schwellen 90/90/90/80 | `npm run test:coverage` | Statements 91,23 % · Branches 80,05 % · Functions 96 % · Lines 94,1 % — über allen Schwellen (14.07.2026) |
 | Build reproduzierbar | Wrangler-Bundle ohne Upload | `npx wrangler deploy --dry-run` | Bundle gebaut, „--dry-run: exiting now.“ (14.07.2026); zusätzlich baut jeder Testlauf den Worker in workerd |
 | Dependency-Audit (Produktions-Abhängigkeiten) | npm-Advisory-Datenbank | `npm audit --omit=dev --audit-level=high` (auch CI-Job „Audit shipped dependencies“) | „found 0 vulnerabilities“ (14.07.2026) |
-| Secret-Scan (volle Historie) | gitleaks | CI-Job „secret-scan“ | CI-Run **29260307883** auf Commit `70a42e8`: success (13.07.2026) |
+| Secret-Scan (volle Historie) | gitleaks | CI-Job „secret-scan“ | CI-Run **29313056451** auf Commit `606c03e`: success (14.07.2026) |
 | Rollback-Probe (Tag aus sich heraus baubar) | frischer `git worktree` auf `v1.0.1` (`53feafb`) | siehe [RUNBOOK.md](RUNBOOK.md) | `npm install` (198 Pakete) · Lint grün · **22 Dateien / 138 Tests grün** · `wrangler deploy --dry-run` ok (14.07.2026) |
 | UI-Profil: E2E-Test kritischster Nutzerfluss | Link → Adresse → Mail-Eingang → Lesen → Export, nur über echte Worker-Einstiege | `test/integration/e2e-participant-flow.test.js` (Teil von `npm test`) | grün (14.07.2026) |
 | UI-Profil: automatischer Accessibility-Check | axe-core (strukturelle Regeln) auf Teilnehmer-App + Landing | `npm run test:a11y` (auch CI-Schritt) | 2 Tests, 0 Verstöße (14.07.2026). Grenze: `color-contrast` braucht echtes Rendering → Design-Token ([design-ci.md](design-ci.md)) + manueller Test |
