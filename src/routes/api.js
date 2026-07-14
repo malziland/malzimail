@@ -9,10 +9,10 @@ import { ttlHours } from '../domain/settings.js';
 import { resolveGoogleConfig } from '../domain/google.js';
 import {
   friendlyLogin, readToken, paramAddress,
-  ADDRESS_PREFIX, RANDOM_LENGTH, MAX_GENERATION_ATTEMPTS, MESSAGES_LIMIT, MESSAGE_RETENTION_MS,
+  ADDRESS_PREFIX, RANDOM_LENGTH, MAX_GENERATION_ATTEMPTS, MESSAGES_LIMIT,
 } from '../domain/address.js';
 import {
-  deleteOldMessages, insertAddress, setAddressGoogle, deleteAddress,
+  deleteOldMessages, insertAddress, setAddressGoogle, deleteAddress, markAddressForGoogleCleanup,
   findAddressTimes, findAddressExpiry, listMessageHeaders, getMessageRow, listMessagesFull,
   getTrainer, countGeneratedToday, countUsedToday,
 } from '../db/queries.js';
@@ -52,7 +52,7 @@ export async function handleApi(request, env, url) {
 async function createAddress(request, env, url) {
   if (Math.random() < 0.05) {
     try {
-      const cutoff = Date.now() - MESSAGE_RETENTION_MS;
+      const cutoff = Date.now() - (await ttlHours(env)) * 3600 * 1000;
       await deleteOldMessages(env.DB, cutoff);
     } catch (e) { /* best effort */ }
   }
@@ -132,7 +132,15 @@ async function createAddress(request, env, url) {
       // (it has no google_login in D1, so neither the cron nor "stop" would ever
       // clean it up = permanent seat-leak + undeleted personal data).
       if (googleEmail) {
-        try { await deleteGoogleUser(gCfg, googleEmail); } catch { /* best effort */ }
+        let removed;
+        try { removed = await deleteGoogleUser(gCfg, googleEmail); } catch { removed = false; }
+        // deleteGoogleUser returns false (not throws) on 403/429/500. If the
+        // immediate delete did not confirm, record the login on the address row
+        // and retire it so the cron retries the deletion instead of orphaning.
+        if (!removed) {
+          try { await markAddressForGoogleCleanup(env.DB, googleEmail, address); }
+          catch { console.error('Could not schedule Google orphan cleanup'); }
+        }
       }
       // Keep the mail address (it works), but tell the UI why the Google login is
       // missing. Best-effort distinction of the account-cap ("limit") case.

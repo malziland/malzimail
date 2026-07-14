@@ -19,7 +19,8 @@ Features bekommen trotzdem ein Flag nach diesem Register (Charta-Regel).
 |---|---|---|
 | `trainers.google_enabled` (DB-Feld) | Legacy, **kein Gate mehr** — `/api/address` ignoriert es. Nicht wieder als Schalter anschließen, ohne auch die Admin-Anzeige daran zu koppeln | mit der nächsten destruktiven Migration entfernen (Expand-Contract); Prüfung spätestens im nächsten LANGAUDIT |
 | `ADMIN_TRAINER_TOKEN` (env-Var) | Legacy-Fallback für den Dashboard-Workshop-Token (`src/routes/admin.js`); laut Umbau-Konzept Phase 6 zu entfernen. Undokumentierter Konfig-Schalter | entfernen, sobald bestätigt ist, dass keine Live-Instanz die Variable gesetzt hat; sonst über `default_workshop_token` ersetzen |
-| `ADMIN_KEY` (env-Var) | Optionales zweites Admin-Credential (nur aktiv, wenn gesetzt); interne Nachschärfung vorgemerkt | entfernen, wenn ungenutzt; sonst intern härten |
+
+`ADMIN_KEY` (optionaler URL-Schlüssel-Admin-Zugang) wurde **entfernt** (2026-07-14) — es gibt nur noch den Passwort-Login. Die Variable wird ignoriert.
 
 ## Regeln
 

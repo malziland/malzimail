@@ -19,9 +19,28 @@
       body: 'action=stop'
     })
       .then(function (r) { return r.json().catch(function () { return {}; }); })
-      .then(function () { location.href = '/admin'; })
+      .then(function (d) {
+        // On a clean stop just reload; if Google was unreachable / some accounts
+        // failed, carry the message as a flash so the admin actually sees it.
+        if (d && (d.googleError || d.failed)) {
+          location.href = '/admin?flash=' + encodeURIComponent(d.message || 'Workshop gestoppt.');
+        } else {
+          location.href = '/admin';
+        }
+      })
       .catch(function () { location.href = '/admin'; });
   }
+
+  // Prevent a double-click on "Workshop starten" from POSTing twice (which could
+  // briefly create two active links). Disable the button on submit.
+  (function () {
+    var startForm = document.getElementById('startForm');
+    if (!startForm) return;
+    startForm.addEventListener('submit', function () {
+      var b = startForm.querySelector('button[type="submit"]');
+      if (b) b.disabled = true;
+    });
+  })();
 
   // One delegated listener handles every button. Modals close ONLY via their buttons
   // (open-modal / close-modal) — a click on the dimmed backdrop must NOT close them.

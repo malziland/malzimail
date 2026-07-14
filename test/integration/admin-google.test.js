@@ -188,14 +188,15 @@ describe('admin Google configuration (modal on the dashboard)', () => {
     expect((await call('/admin', { method: 'POST', body: form({ password: 'live-secret' }) })).status).toBe(429);
   });
 
-  it('SEC-05: a valid ?key= upgrades to a cookie and redirects to a clean URL', async () => {
+  it('an admin URL key (?key=) is NOT a login path — it is ignored', async () => {
+    // ADMIN_KEY was removed: even if the env var is set, ?key= must not authenticate.
     const req = new Request(ORIGIN + '/admin?key=secret-key');
     const ctx = createExecutionContext();
     const res = await worker.fetch(req, { ...env, ...EXTRA, ADMIN_KEY: 'secret-key' }, ctx);
     await waitOnExecutionContext(ctx);
-    expect(res.status).toBe(303);
-    expect(res.headers.get('location')).toBe('/admin');          // key stripped from the URL
-    expect(res.headers.get('set-cookie') || '').toMatch(/^mzm_admin=/); // upgraded to cookie
+    expect(res.status).toBe(200);                                 // shows the login page, not a session
+    expect(res.headers.get('set-cookie') || '').not.toMatch(/mzm_admin=/); // no admin cookie granted
+    expect(await res.text()).toContain('Anmelden');
   });
 
   it('the key identifier is NOT shown in the modal', async () => {

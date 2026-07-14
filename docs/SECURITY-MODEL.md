@@ -15,7 +15,7 @@ gilt eine CSP ohne `unsafe-inline`, Mail-Anzeige über eine eigene iframe-Route)
 | Mail-Inhalte in D1 | können PII und Zugangsdaten enthalten (absenderbestimmt) |
 | `MAIL_ENCRYPTION_KEY` | Master-Schlüssel; entschlüsselt Mails + Google-Schlüssel |
 | Google-Service-Account-Schlüssel | erlaubt Konto-Anlage/-Löschung im Google-Tenant |
-| Admin-Zugang (Passwort-Hash, Session-Cookie; optional `ADMIN_KEY`) | volle Kontrolle über die Instanz. `ADMIN_KEY` ist ein optionales zweites Admin-Credential (nur aktiv, wenn gesetzt) — bei Leak-Verdacht mit-rotieren, siehe [RUNBOOK.md](RUNBOOK.md) |
+| Admin-Zugang (Passwort-Hash, Session-Cookie) | volle Kontrolle über die Instanz. Einziger Login-Weg ist das Admin-Passwort (PBKDF2); der frühere optionale `ADMIN_KEY`-URL-Zugang wurde entfernt |
 | Teilnehmer-Link (Workshop-Token) | einziges Tor zur Adress-/Konto-Anlage |
 | Wegwerf-Google-Konten (Login = Passwort) | bewusst schwach — nur so lange gültig wie die Adresse |
 
@@ -71,12 +71,13 @@ gilt eine CSP ohne `unsafe-inline`, Mail-Anzeige über eine eigene iframe-Route)
 |---|---|---|---|
 | Kein Rate-Limit auf `/api/address` | Tor ist der rotierende geheime Link; Limits wurden bewusst entfernt (Betreiber-Verantwortung) | Betreiber:in | beim nächsten LANGAUDIT |
 | Betreiber kann entschlüsseln | systembedingt (Worker muss Google ansprechen); schützt trotzdem gegen DB-Leaks | Betreiber:in | dauerhaft akzeptiert |
+| Teilnehmende eines Workshops sind untereinander nicht kryptografisch getrennt | semi-vertraute, eingeladene Gruppe; nur Wegwerf-Inhalte, kurzlebig, Seite nur während des Workshops offen; strengere Trennung würde den Cross-Device-QR-Login verkomplizieren | Betreiber:in | akzeptiert (Christoph, 14.07.2026) |
 
 ## Offene Befunde
 
-Offene, noch nicht behobene Sicherheits-/Zuverlässigkeitsbefunde werden **nicht
-öffentlich** geführt (kein Ausnutzungs-Fahrplan für einen laufenden Dienst). Sie
-liegen in einer internen, gitignorierten Notiz (`docs/security-private/`) und
-werden über dev-getestete Änderungen behoben; danach dürfen sie als sanitisierte
-Zusammenfassung öffentlich werden. Schwachstellen bitte vertraulich melden —
-siehe [SECURITY.md](../SECURITY.md).
+Die internen Sicherheits-/Zuverlässigkeitsbefunde des Audits vom 14.07.2026
+wurden behoben (dev-getestete Änderungen). Der einzige verbliebene Punkt ist
+oben als bewusst akzeptiertes Rest-Risiko festgehalten. Detail-Notizen liegen
+intern (`docs/security-private/`, gitignoriert) — hier bewusst ohne
+Ausnutzungs-Details für einen laufenden Dienst. Schwachstellen bitte vertraulich
+melden, siehe [SECURITY.md](../SECURITY.md).

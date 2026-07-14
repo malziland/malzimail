@@ -3,6 +3,19 @@
 Alle nennenswerten Änderungen an diesem Projekt werden hier dokumentiert.
 Format angelehnt an [Keep a Changelog](https://keepachangelog.com/de/1.1.0/); Versionierung nach [SemVer](https://semver.org/lang/de/).
 
+## [1.1.2] – 2026-07-14
+
+### Behoben (interne Sicherheitsprüfung — Laufzeit)
+- **„Workshop stoppen“ ist jetzt verlässlich:** Postfächer werden immer zuerst lokal gelöscht und der Link deaktiviert — auch wenn Google im Moment des Stopps nicht erreichbar ist. Betroffene Google-Konten werden dann automatisch beim nächsten Aufräum-Lauf entfernt, und der Admin bekommt eine Meldung statt eines stillen Fehlschlags.
+- **Login-IP-Adressen werden nicht mehr dauerhaft gespeichert:** Die Einträge der Anmelde-Drosselung werden bei erfolgreichem Login sofort und sonst automatisch nach kurzer Zeit (Aufräum-Lauf) gelöscht — im Einklang mit der Datenschutzseite.
+- **Keine verwaisten Google-Konten mehr:** Schlägt das Aufräumen nach einem halb angelegten Konto fehl, wird das Konto vorgemerkt und beim nächsten Lauf sicher gelöscht.
+- **Aufbewahrung folgt der eingestellten Laufzeit:** Wird die Lebensdauer über 48 h gestellt, verschwinden Mails aktiver Postfächer nicht mehr vorzeitig.
+- **Doppelklick auf „Workshop starten“** erzeugt keinen zweiten Link mehr (Knopf wird beim Absenden gesperrt).
+- **Aufräum-Lauf effizienter:** Google-Konten werden mit einem gemeinsamen Zugangstoken gelöscht (statt eines pro Konto).
+
+### Entfernt
+- **`ADMIN_KEY` (versteckter Zweit-Login per `/admin?key=…`) ersatzlos entfernt.** Einziger Admin-Login ist das Passwort. Falls die Variable je gesetzt war: der normale Passwort-Login ist davon unberührt.
+
 ## [1.1.1] – 2026-07-14
 
 ### Hinzugefügt

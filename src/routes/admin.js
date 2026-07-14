@@ -6,7 +6,7 @@ import {
   renderSetupPassword, renderPasswordChange,
   renderSetupOperator, renderSetupGoogle, systemCheckCells
 } from '../pages.js';
-import { getSetting, setSetting } from '../domain/settings.js';
+import { getSetting, setSetting, deleteSetting } from '../domain/settings.js';
 import { hashPassword, verifyPassword } from '../lib/passwords.js';
 import { sha256Hex, generateSecret } from '../lib/util.js';
 import { makeCipher, cipherEncrypt, cipherDecrypt } from '../lib/crypto.js';
@@ -58,8 +58,6 @@ async function recordLoginFail(env, ip, now) {
 }
 
 export async function handleAdmin(request, env, url) {
-  const adminKey = env.ADMIN_KEY || '';
-
   // Block cross-origin state changes before doing anything else.
   if (request.method === 'POST' && !isSameOrigin(request, url)) {
     return new Response('Cross-origin request blocked', { status: 403 });
@@ -87,24 +85,10 @@ export async function handleAdmin(request, env, url) {
   const authSecret = dbHash ? await sha256Hex(dbHash) : (legacyPw ? await sha256Hex(legacyPw) : '');
   const cookies = parseCookies(request.headers.get('cookie') || '');
   const cookieValid = !!authSecret && cookies['mzm_admin'] === authSecret;
-  const urlKey = url.searchParams.get('key') || '';
-  const urlKeyValid = adminKey && urlKey === adminKey;
-  const authed = cookieValid || urlKeyValid;
+  const authed = cookieValid;
 
   const thirtyDaysSec = 30 * 24 * 3600;
   const setCookie = (secret) => `mzm_admin=${secret}; Path=/; Max-Age=${thirtyDaysSec}; HttpOnly; Secure; SameSite=Lax`;
-
-  // SEC-05: a valid ?key= upgrades to the auth cookie and redirects to a clean URL,
-  // so the admin key isn't carried (and thus logged / shared / left in history) in
-  // every subsequent URL. Only on GET; POST actions authenticate via cookie/form.
-  if (urlKeyValid && authSecret && request.method === 'GET') {
-    const clean = new URL(url);
-    clean.searchParams.delete('key');
-    return new Response('', {
-      status: 303,
-      headers: { location: clean.pathname + (clean.search || ''), 'set-cookie': setCookie(authSecret) },
-    });
-  }
 
   // First-run setup: no password configured anywhere -> assistant step 1.
   if (!passwordConfigured) {
@@ -171,7 +155,7 @@ export async function handleAdmin(request, env, url) {
     }
     const ok = dbHash ? await verifyPassword(submitted, dbHash) : (legacyPw && submitted === legacyPw);
     if (ok) {
-      await setSetting(env, 'loginguard:' + ip, '0:0'); // reset on success
+      await deleteSetting(env, 'loginguard:' + ip); // clear throttle row on success (don't retain the IP)
       return new Response('', { status: 303, headers: { location: '/admin', 'set-cookie': setCookie(authSecret) } });
     }
     await recordLoginFail(env, ip, Date.now());
@@ -361,15 +345,17 @@ async function handleAdminAction(form, env, url) {
       // No confirmation flash — the dashboard already shows "Workshop läuft" + the link.
       return new Response('', { status: 303, headers: { location: '/admin' } });
     }
-    // Stop = wipe everything (Google accounts + mailboxes) and kill the link.
-    // Returns JSON so the modal can show a spinner and reload when done.
+    // Stop = wipe everything (mailboxes + Google accounts) and kill the link.
+    // The local wipe + link kill always happen (wipeAllSessions does the local
+    // part first); if Google was unreachable, the accounts are retired and the
+    // cron cleans them up. Returns JSON so the modal can show a spinner + message.
     if (action === 'stop') {
       const w = await wipeAllSessions(env);
       await deactivateAllTrainers(env.DB);
-      return jsonResponse({
-        ok: true, ...w,
-        message: `Workshop gestoppt · ${w.deleted} Google-Konten gelöscht${w.failed ? `, ${w.failed} fehlgeschlagen` : ''}, ${w.reset} Sitzungen zurückgesetzt.`,
-      });
+      const message = w.googleError
+        ? `Workshop gestoppt, Postfächer gelöscht und Link deaktiviert. Google war nicht erreichbar — ${w.failed} Konten werden automatisch beim nächsten Aufräum-Lauf gelöscht.`
+        : `Workshop gestoppt · ${w.deleted} Google-Konten gelöscht${w.failed ? `, ${w.failed} fehlgeschlagen` : ''}, ${w.reset} Sitzungen zurückgesetzt.`;
+      return jsonResponse({ ok: true, ...w, message });
     }
     if (action === 'test_google_form') {
       const fSubject = (form.get('subject') || '').toString().trim();

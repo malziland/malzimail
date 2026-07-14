@@ -55,27 +55,43 @@ export function googleTestSummary(r) {
   return 'Verbindung fehlgeschlagen' + (parts.length ? ' (' + parts.join(' · ') + ')' : '') + '.';
 }
 
-// Wipe everything for the current workshop: delete all Google accounts at Google,
-// empty all active mailboxes and retire those addresses (expires_at = 0 sentinel,
-// which the app shows as a reset). Used by "stop workshop". Returns counts.
+// Wipe everything for the current workshop: empty all active mailboxes, retire
+// those addresses (expires_at = 0 sentinel, shown as a reset) and delete the
+// Google accounts. Used by "stop workshop".
+//
+// The LOCAL wipe runs FIRST and unconditionally, so the emergency stop always
+// clears mailboxes and kills the link even when Google is unreachable — the
+// Google call must never gate the local deletion. If the Google side fails
+// (e.g. the OAuth token cannot be fetched), the accounts keep their google_login
+// and are now retired (expires_at = 0), so the scheduled cron retries deleting
+// them; `googleError` is returned true so the UI can say so. Returns counts.
 export async function wipeAllSessions(env) {
-  const cfg = await resolveGoogleConfig(env);
-  const withGoogle = (await findAddressesWithGoogle(env.DB)).results;
-  let deleted = 0, failed = 0;
-  if (cfg && withGoogle.length) {
-    const outcomes = await deleteGoogleUsers(cfg, withGoogle.map((r) => r.google_login));
-    const okByEmail = new Map(outcomes.map((o) => [o.email, o.ok]));
-    for (const row of withGoogle) {
-      if (okByEmail.get(row.google_login)) {
-        await clearGoogleLogin(env.DB, row.address);
-        deleted++;
-      } else {
-        failed++;
-      }
-    }
-  }
   const now = Date.now();
   await deleteMessagesForActiveAddresses(env.DB, now);
   const upd = await retireActiveAddresses(env.DB, now);
-  return { deleted, failed, reset: (upd.meta && upd.meta.changes) || 0 };
+  const reset = (upd.meta && upd.meta.changes) || 0;
+
+  const cfg = await resolveGoogleConfig(env);
+  const withGoogle = (await findAddressesWithGoogle(env.DB)).results;
+  let deleted = 0, failed = 0, googleError = false;
+  if (cfg && withGoogle.length) {
+    try {
+      const outcomes = await deleteGoogleUsers(cfg, withGoogle.map((r) => r.google_login));
+      const okByEmail = new Map(outcomes.map((o) => [o.email, o.ok]));
+      for (const row of withGoogle) {
+        if (okByEmail.get(row.google_login)) {
+          await clearGoogleLogin(env.DB, row.address);
+          deleted++;
+        } else {
+          failed++;
+        }
+      }
+    } catch {
+      // Token fetch / network failure: leave google_login set (addresses are now
+      // retired) so the cron retries; the local wipe already succeeded.
+      googleError = true;
+      failed = withGoogle.length;
+    }
+  }
+  return { deleted, failed, reset, googleError };
 }

@@ -7,15 +7,21 @@ import {
 } from './pages.js';
 import { getLegalContext } from './domain/legal.js';
 import { resolveGoogleConfig } from './domain/google.js';
+import { ttlHours } from './domain/settings.js';
 import { htmlResponse, withSecurity } from './lib/http.js';
 import {
   findAddressForDelivery, insertMessage, setFirstMailAt,
   deleteRetiredMessages, findExpiredGoogleAddresses, clearGoogleLogin,
+  deleteStaleLoginGuards,
 } from './db/queries.js';
 import { makeCipher, cipherEncrypt } from './lib/crypto.js';
-import { deleteGoogleUser } from './lib/google.js';
+import { deleteGoogleUsers } from './lib/google.js';
 import { hashForLog } from './lib/util.js';
-import { GRACE_PERIOD_MS, MESSAGE_RETENTION_MS } from './domain/address.js';
+import { GRACE_PERIOD_MS } from './domain/address.js';
+
+// Login-throttle rows (loginguard:<ip>) are purged once untouched for this long,
+// so admin-login IPs are not retained indefinitely (well past the cooldown).
+const LOGINGUARD_RETENTION_MS = 60 * 60 * 1000; // 1 hour
 import { handleApi } from './routes/api.js';
 import { handleAdmin } from './routes/admin.js';
 import { handleRoot } from './routes/public.js';
@@ -123,31 +129,43 @@ export default {
 
   async scheduled(controller, env, ctx) {
     const now = Date.now();
-    const cutoff = now - MESSAGE_RETENTION_MS;
+    // Backstop cutoff follows the configured retention (ttlHours), so raising the
+    // lifetime above the old 48h default never deletes mail from still-active
+    // mailboxes; per-address expiry does the precise cleanup. (PRIV-03)
+    const cutoff = now - (await ttlHours(env)) * 3600 * 1000;
     try {
-      // Delete messages whose address has expired (honours the configured ttlHours),
-      // plus an absolute 48h backstop. (PRIV-03)
       const result = await deleteRetiredMessages(env.DB, cutoff, now);
       console.log('Cleanup: deleted', result.meta.changes, 'old messages');
     } catch (err) {
       console.error('Scheduled cleanup failed');
     }
 
+    // Drop stale login-throttle rows so admin-login IPs are not retained.
+    try {
+      await deleteStaleLoginGuards(env.DB, now - LOGINGUARD_RETENTION_MS);
+    } catch (err) {
+      console.error('Login-guard cleanup failed');
+    }
+
     // Delete expired Google accounts (the mail address row is kept forever for
-    // global uniqueness; only the Google login is removed).
+    // global uniqueness; only the Google login is removed). One access token for
+    // the whole batch instead of one per account.
     const gCfg = await resolveGoogleConfig(env);
     if (gCfg) {
       try {
         const { results } = await findExpiredGoogleAddresses(env.DB, now);
-        let deleted = 0;
-        for (const row of results) {
-          const ok = await deleteGoogleUser(gCfg, row.google_login);
-          if (ok) {
-            await clearGoogleLogin(env.DB, row.address);
-            deleted++;
+        if (results.length) {
+          const outcomes = await deleteGoogleUsers(gCfg, results.map((r) => r.google_login));
+          const okByEmail = new Map(outcomes.map((o) => [o.email, o.ok]));
+          let deleted = 0;
+          for (const row of results) {
+            if (okByEmail.get(row.google_login)) {
+              await clearGoogleLogin(env.DB, row.address);
+              deleted++;
+            }
           }
+          if (deleted) console.log('Cleanup: deleted', deleted, 'expired Google accounts');
         }
-        if (deleted) console.log('Cleanup: deleted', deleted, 'expired Google accounts');
       } catch (err) {
         console.error('Google cleanup failed');
       }

@@ -120,7 +120,6 @@ Per `npx wrangler secret put <NAME>` gesetzt; Übersicht: `npx wrangler secret l
 | `COCKPIT_PASSWORD` | Admin-Passwort-Fallback (Vorrang hat der Hash in den Settings) |
 | `MAIL_ENCRYPTION_KEY` | Master-Schlüssel für die Verschlüsselung (Mails + Google-Schlüssel) |
 | `GOOGLE_SA_KEY` | Google-Service-Account-Schlüssel (Fallback; Vorrang hat die verschlüsselte DB-Ablage) |
-| `ADMIN_KEY` (optional) | falls gesetzt: alternativer Admin-Zugang per `/admin?key=…`. **Zweites Voll-Zugangs-Credential** — bei Leak-Verdacht mit-rotieren. Wenn nicht genutzt: nicht setzen (Rest-Risiko, siehe [SECURITY-MODEL.md](SECURITY-MODEL.md)) |
 
 ## Wiederkehrende Wartung
 

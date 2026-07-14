@@ -73,6 +73,15 @@ export async function clearGoogleLogin(db, address) {
   ).bind(address).run();
 }
 
+// Purge stale per-IP login-throttle rows so admin-login IPs are not retained
+// indefinitely (they exist only for the short throttle window). A row that has
+// not been touched since `cutoff` is past its cooldown and safe to drop.
+export async function deleteStaleLoginGuards(db, cutoff) {
+  return await db.prepare(
+    "DELETE FROM settings WHERE key LIKE 'loginguard:%' AND updated_at < ?"
+  ).bind(cutoff).run();
+}
+
 // ---------- createAddress ----------
 
 export async function insertAddress(db, address, now, expiresAt, token) {
@@ -85,6 +94,16 @@ export async function setAddressGoogle(db, googleEmail, encPw, address) {
   return await db.prepare(
     'UPDATE addresses SET google_login = ?, google_password_enc = ? WHERE address = ?'
   ).bind(googleEmail, encPw, address).run();
+}
+
+// A Google account was created but its address never became usable (DB write /
+// encryption failed) AND the immediate compensating delete did not succeed.
+// Record the login on the address row and retire it (expires_at = 0) so the
+// scheduled cron picks it up and retries the deletion — otherwise it orphans.
+export async function markAddressForGoogleCleanup(db, googleEmail, address) {
+  return await db.prepare(
+    'UPDATE addresses SET google_login = ?, expires_at = 0 WHERE address = ?'
+  ).bind(googleEmail, address).run();
 }
 
 export async function deleteAddress(db, address) {

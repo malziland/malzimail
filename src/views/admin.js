@@ -296,7 +296,7 @@ export function renderWorkshopDashboard({ workshop, serviceName, googleActive, g
           <h2 class="h2--mb4">Workshop starten</h2>
           <p class="muted p-tight">Erzeugt einen frischen Teilnehmer-Link (gilt bis du stoppst).</p>
         </div>
-        <form method="POST" action="/admin" class="inline-form">
+        <form id="startForm" method="POST" action="/admin" class="inline-form">
           <input type="hidden" name="action" value="activate">
           <button type="submit" class="ws-btn ws-btn--start"><svg viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="2" stroke-linejoin="round" aria-hidden="true"><path d="m7 5 12 7-12 7V5z"></path></svg> Workshop starten</button>
         </form>
