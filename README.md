@@ -30,7 +30,7 @@ npm run dev        # lokale Entwicklung
 npm run deploy:dev # Deploy auf die Test-Instanz
 ```
 
-Architektur: [docs/architektur.md](docs/architektur.md) · Ziel-Struktur: [docs/projektstruktur.md](docs/projektstruktur.md) · Qualitätsregeln: [docs/oss-projekt-charta.md](docs/oss-projekt-charta.md) · Funktionstest (Mail + Google): [docs/funktionstest.md](docs/funktionstest.md)
+Architektur: [docs/architektur.md](docs/architektur.md) · Ziel-Struktur: [docs/projektstruktur.md](docs/projektstruktur.md) · Qualitätsregeln: [docs/oss-projekt-charta.md](docs/oss-projekt-charta.md) · Funktionstest (Mail + Google): [docs/funktionstest.md](docs/funktionstest.md) · Betrieb/Rollback: [docs/RUNBOOK.md](docs/RUNBOOK.md) · Sicherheitsmodell: [docs/SECURITY-MODEL.md](docs/SECURITY-MODEL.md) · Nachweise: [docs/VERIFICATION.md](docs/VERIFICATION.md) · Entscheidungen: [docs/adr/](docs/adr/) · KI-Assistenten: [AGENTS.md](AGENTS.md)
 
 ## Mitmachen / Sicherheit
 

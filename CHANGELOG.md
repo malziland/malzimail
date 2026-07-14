@@ -3,6 +3,17 @@
 Alle nennenswerten Änderungen an diesem Projekt werden hier dokumentiert.
 Format angelehnt an [Keep a Changelog](https://keepachangelog.com/de/1.1.0/); Versionierung nach [SemVer](https://semver.org/lang/de/).
 
+## [Unveröffentlicht]
+
+### Hinzugefügt
+- **Enterprise-Doku-Fundament** (Angleichung an die Prompt-Familie PROJEKTSTART/CHANGE DELIVERY/KURZAUDIT/LANGAUDIT): `AGENTS.md` (Arbeitsregeln für KI-Assistenten), `docs/RUNBOOK.md` (Deploy/Rollback/Notfall — Rollback auf `v1.0.1` real geprobt), `docs/SECURITY-MODEL.md` (Sicherheits- und Datenskizze), `docs/FLAGS.md` (Schalter-Register), `docs/VERIFICATION.md` (Nachweis-Matrix), `docs/adr/ADR-0001` (Grundsatzentscheidungen rückwirkend dokumentiert).
+- **End-to-End-Test des Teilnehmerflusses** (Link → Adresse → Mail-Eingang → Lesen → Export, ausschließlich über echte Worker-Einstiege).
+- **Automatischer Barrierefreiheits-Check** (`npm run test:a11y`, axe-core auf Teilnehmer-App + Startseite) als eigener CI-Schritt; manueller Tastatur-Smoketest in `docs/funktionstest.md` dokumentiert.
+- `.gitattributes` (einheitliche LF-Zeilenenden) und optionaler Pre-Commit-Hook (`.githooks/`, aktivierbar per `git config core.hooksPath .githooks`).
+
+### Behoben
+- Coverage-Messung stolpert nicht mehr über Nicht-Code-Dateien in `src/` (z. B. macOS `.DS_Store`): Instrumentierung auf `src/**/*.js` begrenzt.
+
 ## [1.1.0] – 2026-07-13
 
 ### Geändert
