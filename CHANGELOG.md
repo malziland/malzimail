@@ -7,6 +7,8 @@ Format angelehnt an [Keep a Changelog](https://keepachangelog.com/de/1.1.0/); Ve
 
 ### Geändert (Wartung — keine Auswirkung auf den laufenden Dienst)
 - **Abhängigkeiten aktualisiert** (löst sieben offene Dependabot-PRs auf einmal auf): `wrangler` 4.100.0 → 4.115.0, `@cloudflare/vitest-pool-workers` 0.16.15 → 0.19.0, `vitest` + `@vitest/coverage-istanbul` 4.1.8 → 4.1.10, `eslint` 10.5.0 → 10.8.0, `globals` 17.6.0 → 17.8.0, `postal-mime` 2.7.4 → 2.7.5. GitHub-Actions `checkout` und `setup-node` auf v7 gehoben (weiterhin auf Commit-SHA gepinnt).
+- **Installations-Skripte sind jetzt ausdrücklich freigegeben** (`allowScripts` in `package.json`): npm führt Skripte von Abhängigkeiten künftig nur noch nach Freigabe aus — ein Schutz gegen Supply-Chain-Angriffe. Freigegeben sind genau `esbuild`, `workerd` und `fsevents`; alle drei laden nur ihre eigene Programmdatei nach und werden nicht ausgeliefert. Ohne diesen Eintrag hätte die nächste große npm-Version die Test- und Deploy-Werkzeuge lahmgelegt.
+- **`jsdom` bleibt bewusst auf Version 29** (Eintrag in `dependabot.yml`): Version 30 verlangt eine neuere Node-Version als die hier installierte und würde bei jedem `npm install` eine Warnung erzeugen — ohne Gegenwert, da `jsdom` nur die Barrierefreiheits-Tests trägt.
 - **Bekannte Schwachstelle in einem Test-Werkzeug geschlossen** (`brace-expansion`, DoS-Risiko, transitiv über `eslint` → `minimatch`). Betraf nur die Entwicklungsumgebung, nie den ausgelieferten Worker; `npm audit` meldet jetzt null Funde — auch inklusive Entwicklungs-Werkzeugen.
 
 ### Hinzugefügt

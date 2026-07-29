@@ -27,12 +27,17 @@
     "axe-core": "^4.12.1",
     "eslint": "^10.8.0",
     "globals": "^17.8.0",
-    "jsdom": "^30.0.1",
+    "jsdom": "^29.1.1",
     "vitest": "^4.1.10",
     "wrangler": "^4.115.0"
   },
   "dependencies": {
     "postal-mime": "^2.7.5",
     "qrcode-svg": "^1.1.0"
+  },
+  "allowScripts": {
+    "esbuild": true,
+    "fsevents": true,
+    "workerd": true
   }
 }

@@ -23,6 +23,14 @@ updates:
       prefix: chore
       include: scope
     open-pull-requests-limit: 5
+    ignore:
+      # jsdom 30 requires Node ^22.22.2 || ^24.15.0 || >=26.0.0. The maintainer's
+      # machine runs an older 24.x, so auto-merging that major would make every
+      # local `npm install` print an EBADENGINE warning while buying nothing —
+      # jsdom only backs the axe-core a11y tests. Drop this entry once the local
+      # Node is >= 24.15 (check with `node -v`); patch/minor updates still flow.
+      - dependency-name: jsdom
+        update-types: [version-update:semver-major]
     groups:
       # Ships inside the Worker — a major bump here is NOT auto-merged.
       production-dependencies:
