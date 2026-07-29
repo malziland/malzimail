@@ -1,12 +1,35 @@
 # Dependabot: keep dependencies and CI actions patched; flag known vulnerabilities.
+#
+# Noise policy: updates are BATCHED into a few grouped pull requests on a monthly
+# cadence instead of one PR per package. Combined with the auto-merge job in
+# ci.yml, a routine update cycle needs no human attention at all — mail only
+# arrives when CI actually fails, or when a production dependency wants a major
+# version (that case is deliberately left for a human to look at).
+#
+# Groups are split by dependency-type on purpose: the auto-merge job reads
+# `dependency-type` from the PR metadata, and that output is only unambiguous
+# when a single PR does not mix production and development dependencies.
 version: 2
 updates:
   - package-ecosystem: npm
     directory: "/"
     schedule:
-      interval: weekly
+      interval: monthly
     open-pull-requests-limit: 5
+    groups:
+      # Ships inside the Worker — a major bump here is NOT auto-merged.
+      production-dependencies:
+        dependency-type: production
+      # Build/test tooling only (vitest, eslint, wrangler, …). Never reaches the
+      # deployed Worker, so a green CI run is a sufficient gate.
+      development-dependencies:
+        dependency-type: development
+
   - package-ecosystem: github-actions
     directory: "/"
     schedule:
-      interval: weekly
+      interval: monthly
+    groups:
+      github-actions:
+        patterns:
+          - "*"

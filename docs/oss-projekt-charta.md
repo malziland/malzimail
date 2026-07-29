@@ -48,6 +48,7 @@ Drei getrennte Fragen, alle vor dem öffentlichen Release zu klären:
 
 ### 1e. Automatisierung (CI/CD)
 - **GitHub Actions:** bei jedem Push → Lint + Tests + Secret-Scan (gitleaks) + Dependency-Audit (`npm audit --omit=dev`). Kein roter Build wird gemerged.
+- **Dependabot-Updates laufen unbeaufsichtigt durch:** monatliche Sammel-PRs, die sich bei grüner CI selbst mergen (Job `dependabot-auto-merge`). Das Sicherheitsnetz ist `needs: [check, secret-scan]` — ohne beide grünen Jobs startet der Merge-Job gar nicht. Hauptversionssprünge ausgelieferter Abhängigkeiten sind bewusst ausgenommen und bleiben liegen.
 - Optional später: automatischer Deploy der Demo-/dev-Instanz aus `main`.
 
 ### 1f. Code-Audits (fester Bestandteil des Prozesses)

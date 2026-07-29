@@ -20,9 +20,9 @@ jobs:
       # Third-party and first-party actions pinned to immutable commit SHAs
       # (mutable major tags can be re-pointed). Dependabot keeps the SHAs current
       # and the trailing comment records the human-readable version.
-      - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
-      - uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
         with:
           node-version-file: .nvmrc
           cache: npm
@@ -57,7 +57,7 @@ jobs:
   secret-scan:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           fetch-depth: 0
       - name: Secret scan (gitleaks)
@@ -67,3 +67,49 @@ jobs:
           # metadata). The automatic token is read-only here (permissions above);
           # without it the job fails on every PR — which blocked all Dependabot PRs.
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  # Merge routine Dependabot updates without human involvement.
+  #
+  # `needs` is the entire safety gate: this job cannot start unless BOTH check
+  # and secret-scan went green, so the merge below is unconditional by design and
+  # needs neither `gh pr merge --auto` nor a branch protection rule. Keeping main
+  # unprotected is deliberate — the maintainer pushes to it directly.
+  #
+  # Workflow runs triggered by Dependabot get a read-only token by default; since
+  # 2021-10-11 the `permissions` key can raise it, which is what happens here.
+  # Scope is job-level so `check` and `secret-scan` — the jobs that execute
+  # untrusted PR content via npm install — keep the read-only token from above.
+  dependabot-auto-merge:
+    runs-on: ubuntu-latest
+    needs: [check, secret-scan]
+    if: github.event_name == 'pull_request' && github.event.pull_request.user.login == 'dependabot[bot]'
+    permissions:
+      contents: write
+      pull-requests: write
+    steps:
+      - name: Fetch Dependabot metadata
+        id: meta
+        uses: dependabot/fetch-metadata@25dd0e34f4fe68f24cc83900b1fe3fe149efef98 # v3.1.0
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+
+      # Held back on purpose: a major bump of a dependency that ships inside the
+      # Worker (postal-mime, qrcode-svg) can change runtime behaviour in ways the
+      # test suite does not necessarily cover. Everything else — all dev tooling,
+      # all GitHub Actions, and patch/minor production bumps — merges itself.
+      # Note: merging only moves main forward; malzimail.at is deployed by hand.
+      - name: Squash-merge the update
+        if: ${{ !(steps.meta.outputs.dependency-type == 'direct:production' && steps.meta.outputs.update-type == 'version-update:semver-major') }}
+        run: gh pr merge --squash --delete-branch "$PR_URL"
+        env:
+          PR_URL: ${{ github.event.pull_request.html_url }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Explain why this one was left open
+        if: ${{ steps.meta.outputs.dependency-type == 'direct:production' && steps.meta.outputs.update-type == 'version-update:semver-major' }}
+        run: |
+          gh pr comment "$PR_URL" --body \
+            "Auto-merge skipped: major version bump of a production dependency. Needs a human look before merging."
+        env:
+          PR_URL: ${{ github.event.pull_request.html_url }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}

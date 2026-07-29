@@ -3,6 +3,15 @@
 Alle nennenswerten Änderungen an diesem Projekt werden hier dokumentiert.
 Format angelehnt an [Keep a Changelog](https://keepachangelog.com/de/1.1.0/); Versionierung nach [SemVer](https://semver.org/lang/de/).
 
+## [Unveröffentlicht]
+
+### Geändert (Wartung — keine Auswirkung auf den laufenden Dienst)
+- **Abhängigkeiten aktualisiert** (löst sieben offene Dependabot-PRs auf einmal auf): `wrangler` 4.100.0 → 4.115.0, `@cloudflare/vitest-pool-workers` 0.16.15 → 0.19.0, `vitest` + `@vitest/coverage-istanbul` 4.1.8 → 4.1.10, `eslint` 10.5.0 → 10.8.0, `globals` 17.6.0 → 17.8.0, `postal-mime` 2.7.4 → 2.7.5. GitHub-Actions `checkout` und `setup-node` auf v7 gehoben (weiterhin auf Commit-SHA gepinnt).
+- **Bekannte Schwachstelle in einem Test-Werkzeug geschlossen** (`brace-expansion`, DoS-Risiko, transitiv über `eslint` → `minimatch`). Betraf nur die Entwicklungsumgebung, nie den ausgelieferten Worker; `npm audit` meldet jetzt null Funde — auch inklusive Entwicklungs-Werkzeugen.
+
+### Hinzugefügt
+- **Dependabot-Updates laufen unbeaufsichtigt durch.** Statt eines PRs je Paket im Wochentakt gibt es monatliche Sammel-PRs (getrennt nach Produktions-Abhängigkeiten, Entwicklungs-Werkzeugen und GitHub-Actions), die sich bei grüner CI selbst mergen (neuer Job `dependabot-auto-merge` in `ci.yml`). Sicherheitsnetz ist `needs: [check, secret-scan]`: ohne beide grünen Jobs startet der Merge gar nicht. **Ausnahme:** ein Hauptversionssprung einer ausgelieferten Abhängigkeit wird nicht automatisch gemergt, sondern bleibt mit einem erklärenden Kommentar offen liegen. Ein Merge bewegt ausschließlich `main` — der Deploy nach malzimail.at bleibt wie bisher Handarbeit.
+
 ## [1.1.2] – 2026-07-14
 
 ### Behoben (interne Sicherheitsprüfung — Laufzeit)

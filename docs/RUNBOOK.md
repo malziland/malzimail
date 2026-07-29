@@ -124,5 +124,5 @@ Per `npx wrangler secret put <NAME>` gesetzt; Übersicht: `npx wrangler secret l
 ## Wiederkehrende Wartung
 
 - **Cron** `0 */6 * * *` (automatisch): löscht abgelaufene Mails und Google-Konten.
-- **Dependabot** (automatisch): hält Abhängigkeiten aktuell; Updates laufen als PR durch die CI.
+- **Dependabot** (automatisch): hält Abhängigkeiten aktuell. Monatlich, gebündelt zu wenigen Sammel-PRs (Produktions-Abhängigkeiten / Entwicklungs-Werkzeuge / GitHub-Actions getrennt). Sind Tests **und** Secret-Scan grün, mergt sich der PR selbst (Job `dependabot-auto-merge` in `ci.yml`). Einzige Ausnahme: ein **Hauptversionssprung einer Produktions-Abhängigkeit** bleibt offen liegen und wird kommentiert — der will angeschaut werden. Ein Merge verändert nur `main`; **live geht nach wie vor nichts von allein** (Deploy bleibt Handarbeit, siehe oben).
 - Nach größeren Änderungen: KURZAUDIT; vor jedem Release: LANGAUDIT (siehe Projekt-Charta).
