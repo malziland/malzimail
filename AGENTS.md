@@ -59,6 +59,31 @@ npm run db:migrate:remote # apply migrations on production
   red = error, rust = destructive; footer "powered by malziland" is fixed on
   every instance; brand name is written "malziMAIL". See `docs/design-ci.md`.
 
+## Dependency maintenance
+
+- Dependabot PRs **merge themselves**: monthly grouped PRs, squash-merged by the
+  `dependabot-auto-merge` job in `ci.yml` once `check` and `secret-scan` are
+  green. Do not merge them by hand and do not "help" by opening replacement PRs.
+- That job's only gate is `needs: [check, secret-scan]`. There is deliberately
+  **no branch protection on `main`** (it would block the operator's direct
+  pushes), so never remove the `needs:` list — it is the entire safety net.
+- A **major** bump of a production dependency is excluded on purpose and stays
+  open with a comment. Look at those; never widen the rule to auto-merge them.
+- `allowScripts` in `package.json` is an explicit allow-list of dependencies
+  permitted to run install scripts (esbuild, workerd, fsevents — all of which
+  only fetch their own binary). npm v12 will BLOCK unlisted ones, which would
+  break tests and deploys. If npm reports a new unreviewed script, review it
+  deliberately rather than approving it reflexively.
+- `jsdom` majors are ignored in `dependabot.yml`: v30 needs Node `^24.15.0` and
+  the operator's machine runs Node from `/usr/local/bin` (24.12.0, **not** nvm).
+  Drop that ignore entry once `node -v` there is >= 24.15.
+- **Warnings count as errors** — the operator's standing requirement. Keep
+  `npm audit` (including dev), `npm outdated`, `eslint --max-warnings=0`, a
+  fresh `npm install`, and the CI log all clean. If a warning comes from third-
+  party code and cannot be fixed, silence it narrowly and write down the
+  condition for removing the workaround (see `NODE_OPTIONS` on the gitleaks
+  step). Check in the operator's own shell, whose Node differs from CI's.
+
 ## Testing notes
 
 - Tests run in workerd, not Node — but the pool does not enforce every edge
