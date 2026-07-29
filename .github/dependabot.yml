@@ -18,7 +18,9 @@ updates:
     # Keep the batched PRs on the repo's Conventional-Commits style, so the
     # squashed merge commit reads like every other maintenance commit.
     commit-message:
-      prefix: chore(deps)
+      # `include: scope` appends (deps) / (deps-dev) itself — a prefix of
+      # "chore(deps)" would produce "chore(deps)(deps-dev):".
+      prefix: chore
       include: scope
     open-pull-requests-limit: 5
     groups:
@@ -37,7 +39,9 @@ updates:
     # Keep the batched PRs on the repo's Conventional-Commits style, so the
     # squashed merge commit reads like every other maintenance commit.
     commit-message:
-      prefix: chore(deps)
+      # `include: scope` appends (deps) / (deps-dev) itself — a prefix of
+      # "chore(deps)" would produce "chore(deps)(deps-dev):".
+      prefix: chore
       include: scope
     groups:
       github-actions:
