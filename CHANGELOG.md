@@ -3,7 +3,9 @@
 Alle nennenswerten Änderungen an diesem Projekt werden hier dokumentiert.
 Format angelehnt an [Keep a Changelog](https://keepachangelog.com/de/1.1.0/); Versionierung nach [SemVer](https://semver.org/lang/de/).
 
-## [Unveröffentlicht]
+## [1.1.3] – 2026-07-29
+
+Reines Wartungs-Release: **am ausgelieferten Code wurde kein einziges Byte geändert** (`git diff v1.1.2..v1.1.3 -- src/ public/ migrations/` ist leer). Live auf malzimail.at seit 29.07.2026, Version `3ac1e230`.
 
 ### Geändert (Wartung — keine Auswirkung auf den laufenden Dienst)
 - **Abhängigkeiten aktualisiert** (löst sieben offene Dependabot-PRs auf einmal auf): `wrangler` 4.100.0 → 4.115.0, `@cloudflare/vitest-pool-workers` 0.16.15 → 0.19.0, `vitest` + `@vitest/coverage-istanbul` 4.1.8 → 4.1.10, `eslint` 10.5.0 → 10.8.0, `globals` 17.6.0 → 17.8.0, `postal-mime` 2.7.4 → 2.7.5. GitHub-Actions `checkout` und `setup-node` auf v7 gehoben (weiterhin auf Commit-SHA gepinnt).
