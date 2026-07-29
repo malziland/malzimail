@@ -15,6 +15,11 @@ updates:
     directory: "/"
     schedule:
       interval: monthly
+    # Keep the batched PRs on the repo's Conventional-Commits style, so the
+    # squashed merge commit reads like every other maintenance commit.
+    commit-message:
+      prefix: chore(deps)
+      include: scope
     open-pull-requests-limit: 5
     groups:
       # Ships inside the Worker — a major bump here is NOT auto-merged.
@@ -29,6 +34,11 @@ updates:
     directory: "/"
     schedule:
       interval: monthly
+    # Keep the batched PRs on the repo's Conventional-Commits style, so the
+    # squashed merge commit reads like every other maintenance commit.
+    commit-message:
+      prefix: chore(deps)
+      include: scope
     groups:
       github-actions:
         patterns:
