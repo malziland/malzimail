@@ -67,6 +67,12 @@ jobs:
           # metadata). The automatic token is read-only here (permissions above);
           # without it the job fails on every PR — which blocked all Dependabot PRs.
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          # gitleaks-action v3 (already the latest release) pulls in a dependency
+          # that still uses Node's deprecated `punycode` module, so every run logs
+          # a DeprecationWarning we cannot fix upstream and cannot act on. This job
+          # runs no first-party code, so suppressing deprecations here hides nothing
+          # of ours. Drop this line once the action stops emitting it.
+          NODE_OPTIONS: --no-deprecation
 
   # Merge routine Dependabot updates without human involvement.
   #
