@@ -32,7 +32,7 @@
     "wrangler": "^4.115.0"
   },
   "dependencies": {
-    "postal-mime": "^2.7.5",
+    "postal-mime": "^4.0.0",
     "qrcode-svg": "^1.1.0"
   },
   "allowScripts": {
